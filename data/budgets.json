@@ -1,0 +1,52 @@
+[
+    {
+        "id": "768a90fa-ceee-49be-8299-230b73dfe499",
+        "code": "OFC-SUP",
+        "name": "Office Supplies",
+        "description": "General office supplies and consumables",
+        "yearly_amount": {
+            "2025": 25000,
+            "2024": 22500
+        }
+    },
+    {
+        "id": "ea3f3b18-f131-4a8b-b59d-2bf7d58547ef",
+        "code": "IT-EQUIP",
+        "name": "IT Equipment",
+        "description": "Computers, peripherals, and technology",
+        "yearly_amount": {
+            "2025": 50000,
+            "2024": 45000
+        }
+    },
+    {
+        "id": "a19b08c1-e37e-4735-a382-54dcd73d0247",
+        "code": "FURN",
+        "name": "Furniture",
+        "description": "Office furniture and fixtures",
+        "yearly_amount": {
+            "2025": 30000,
+            "2024": 35000
+        }
+    },
+    {
+        "id": "9bde8b64-4ecd-48ce-bbcb-2a14b374e7c8",
+        "code": "MKT",
+        "name": "Marketing",
+        "description": "Marketing materials and services",
+        "yearly_amount": {
+            "2025": 40000,
+            "2024": 38000
+        }
+    },
+    {
+        "id": "1918d79d-6ed7-4299-9ceb-54466d774acb",
+        "code": "TRAVEL",
+        "name": "Travel",
+        "description": "Business travel expenses",
+        "yearly_amount": {
+            "2025": 35000,
+            "2024": 40000
+        }
+    }
+]

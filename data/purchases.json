@@ -1,0 +1,1164 @@
+[
+    {
+        "id": "7c687ef4-0e26-4122-b5a9-6955997b7e54",
+        "order_number": "PO-2025-0001",
+        "invoice_number": "INV-00001",
+        "date": "2025-12-08",
+        "vendor_id": "7f0fadf1-d734-4c67-afc1-95803a5cbf5b",
+        "vendor_name": "Electronics Warehouse",
+        "line_items": [
+            {
+                "description": "Speakers",
+                "quantity": 10,
+                "unit_price": 89.99,
+                "received": false
+            },
+            {
+                "description": "Speakers",
+                "quantity": 10,
+                "unit_price": 89.99,
+                "received": true
+            }
+        ],
+        "budgets": [
+            {
+                "budget_id": "a19b08c1-e37e-4735-a382-54dcd73d0247",
+                "amount": 1799.8
+            }
+        ]
+    },
+    {
+        "id": "a018e281-8d3f-4122-9d60-efbf360133d8",
+        "order_number": "PO-2025-0002",
+        "invoice_number": "INV-00002",
+        "date": "2025-06-01",
+        "vendor_id": "a6c3213f-ac8d-4747-bc1a-ff0daf4d4385",
+        "vendor_name": "Office Supplies Co.",
+        "line_items": [
+            {
+                "description": "Copy Paper (Case)",
+                "quantity": 8,
+                "unit_price": 45.99,
+                "received": true
+            }
+        ],
+        "budgets": [
+            {
+                "budget_id": "768a90fa-ceee-49be-8299-230b73dfe499",
+                "amount": 367.92
+            }
+        ]
+    },
+    {
+        "id": "29ddde28-03c1-4555-89c5-f2e85e99ccf9",
+        "order_number": "PO-2025-0003",
+        "invoice_number": "INV-00003",
+        "date": "2025-05-03",
+        "vendor_id": "841e7a4d-f6ef-4984-ad4a-7ee245daf3c4",
+        "vendor_name": "Paper Products Ltd.",
+        "line_items": [
+            {
+                "description": "Business Cards (Box)",
+                "quantity": 8,
+                "unit_price": 29.99,
+                "received": true
+            },
+            {
+                "description": "Envelopes (Box)",
+                "quantity": 5,
+                "unit_price": 15.99,
+                "received": true
+            },
+            {
+                "description": "Presentation Folders",
+                "quantity": 1,
+                "unit_price": 35.99,
+                "received": true
+            },
+            {
+                "description": "Envelopes (Box)",
+                "quantity": 4,
+                "unit_price": 15.99,
+                "received": false
+            }
+        ],
+        "budgets": [
+            {
+                "budget_id": "768a90fa-ceee-49be-8299-230b73dfe499",
+                "amount": 215.2871099718622
+            },
+            {
+                "budget_id": "a19b08c1-e37e-4735-a382-54dcd73d0247",
+                "amount": 204.53289002813779
+            }
+        ]
+    },
+    {
+        "id": "13899e1e-50dd-4b34-ac51-00a58799c464",
+        "order_number": "PO-2025-0004",
+        "invoice_number": "INV-00004",
+        "date": "2025-08-26",
+        "vendor_id": "7f0fadf1-d734-4c67-afc1-95803a5cbf5b",
+        "vendor_name": "Electronics Warehouse",
+        "line_items": [
+            {
+                "description": "Webcam",
+                "quantity": 10,
+                "unit_price": 79.99,
+                "received": false
+            },
+            {
+                "description": "Webcam",
+                "quantity": 9,
+                "unit_price": 79.99,
+                "received": false
+            },
+            {
+                "description": "Speakers",
+                "quantity": 8,
+                "unit_price": 89.99,
+                "received": false
+            },
+            {
+                "description": "Power Strip",
+                "quantity": 4,
+                "unit_price": 24.99,
+                "received": true
+            }
+        ],
+        "budgets": [
+            {
+                "budget_id": "ea3f3b18-f131-4a8b-b59d-2bf7d58547ef",
+                "amount": 1947.7474394067988
+            },
+            {
+                "budget_id": "a19b08c1-e37e-4735-a382-54dcd73d0247",
+                "amount": 391.9425605932013
+            }
+        ]
+    },
+    {
+        "id": "32695e9d-67ce-45b6-afbb-16a454c378ef",
+        "order_number": "PO-2025-0005",
+        "invoice_number": "INV-00005",
+        "date": "2025-10-16",
+        "vendor_id": "a6c3213f-ac8d-4747-bc1a-ff0daf4d4385",
+        "vendor_name": "Office Supplies Co.",
+        "line_items": [
+            {
+                "description": "Stapler",
+                "quantity": 3,
+                "unit_price": 15.99,
+                "received": false
+            },
+            {
+                "description": "Copy Paper (Case)",
+                "quantity": 10,
+                "unit_price": 45.99,
+                "received": false
+            }
+        ],
+        "budgets": [
+            {
+                "budget_id": "9bde8b64-4ecd-48ce-bbcb-2a14b374e7c8",
+                "amount": 127.90957567311604
+            },
+            {
+                "budget_id": "a19b08c1-e37e-4735-a382-54dcd73d0247",
+                "amount": 379.960424326884
+            }
+        ]
+    },
+    {
+        "id": "69eaa914-d83e-47b2-a47f-d7960fe38b46",
+        "order_number": "PO-2025-0006",
+        "invoice_number": "",
+        "date": "2025-08-13",
+        "vendor_id": "3b749d13-1d85-4dc6-aeae-baa3305f846d",
+        "vendor_name": "Tech Solutions Inc.",
+        "line_items": [
+            {
+                "description": "Monitor",
+                "quantity": 5,
+                "unit_price": 249.99,
+                "received": true
+            },
+            {
+                "description": "Monitor",
+                "quantity": 7,
+                "unit_price": 249.99,
+                "received": false
+            },
+            {
+                "description": "Laptop Computer",
+                "quantity": 3,
+                "unit_price": 999.99,
+                "received": true
+            },
+            {
+                "description": "Mouse",
+                "quantity": 10,
+                "unit_price": 29.99,
+                "received": true
+            }
+        ],
+        "budgets": [
+            {
+                "budget_id": "9bde8b64-4ecd-48ce-bbcb-2a14b374e7c8",
+                "amount": 2959.463926552353
+            },
+            {
+                "budget_id": "768a90fa-ceee-49be-8299-230b73dfe499",
+                "amount": 3340.286073447647
+            }
+        ]
+    },
+    {
+        "id": "8e883674-0b16-49d7-842a-ee659552734a",
+        "order_number": "PO-2025-0007",
+        "invoice_number": "",
+        "date": "2025-06-07",
+        "vendor_id": "a6c3213f-ac8d-4747-bc1a-ff0daf4d4385",
+        "vendor_name": "Office Supplies Co.",
+        "line_items": [
+            {
+                "description": "File Folders (Box)",
+                "quantity": 6,
+                "unit_price": 18.99,
+                "received": true
+            },
+            {
+                "description": "Ballpoint Pens (Box)",
+                "quantity": 6,
+                "unit_price": 12.99,
+                "received": true
+            },
+            {
+                "description": "Stapler",
+                "quantity": 2,
+                "unit_price": 15.99,
+                "received": true
+            },
+            {
+                "description": "Stapler",
+                "quantity": 2,
+                "unit_price": 15.99,
+                "received": false
+            },
+            {
+                "description": "Stapler",
+                "quantity": 2,
+                "unit_price": 15.99,
+                "received": true
+            }
+        ],
+        "budgets": [
+            {
+                "budget_id": "9bde8b64-4ecd-48ce-bbcb-2a14b374e7c8",
+                "amount": 287.82
+            }
+        ]
+    },
+    {
+        "id": "90c122be-34a4-405f-8f49-b78f7acfba22",
+        "order_number": "PO-2025-0008",
+        "invoice_number": "INV-00008",
+        "date": "2025-04-12",
+        "vendor_id": "a6c3213f-ac8d-4747-bc1a-ff0daf4d4385",
+        "vendor_name": "Office Supplies Co.",
+        "line_items": [
+            {
+                "description": "Sticky Notes (Pack)",
+                "quantity": 1,
+                "unit_price": 8.49,
+                "received": false
+            },
+            {
+                "description": "File Folders (Box)",
+                "quantity": 5,
+                "unit_price": 18.99,
+                "received": false
+            },
+            {
+                "description": "Copy Paper (Case)",
+                "quantity": 10,
+                "unit_price": 45.99,
+                "received": false
+            },
+            {
+                "description": "Sticky Notes (Pack)",
+                "quantity": 4,
+                "unit_price": 8.49,
+                "received": true
+            },
+            {
+                "description": "Copy Paper (Case)",
+                "quantity": 7,
+                "unit_price": 45.99,
+                "received": true
+            }
+        ],
+        "budgets": [
+            {
+                "budget_id": "1918d79d-6ed7-4299-9ceb-54466d774acb",
+                "amount": 604.5074144217956
+            },
+            {
+                "budget_id": "9bde8b64-4ecd-48ce-bbcb-2a14b374e7c8",
+                "amount": 314.7225855782044
+            }
+        ]
+    },
+    {
+        "id": "4794447e-7d09-49b6-9e16-ec2701f52ab3",
+        "order_number": "PO-2025-0009",
+        "invoice_number": "INV-00009",
+        "date": "2025-09-28",
+        "vendor_id": "841e7a4d-f6ef-4984-ad4a-7ee245daf3c4",
+        "vendor_name": "Paper Products Ltd.",
+        "line_items": [
+            {
+                "description": "Presentation Folders",
+                "quantity": 7,
+                "unit_price": 35.99,
+                "received": false
+            },
+            {
+                "description": "Notebooks (Pack)",
+                "quantity": 4,
+                "unit_price": 24.99,
+                "received": true
+            },
+            {
+                "description": "Printer Paper (Case)",
+                "quantity": 2,
+                "unit_price": 42.99,
+                "received": false
+            }
+        ],
+        "budgets": [
+            {
+                "budget_id": "a19b08c1-e37e-4735-a382-54dcd73d0247",
+                "amount": 190.9614900944943
+            },
+            {
+                "budget_id": "ea3f3b18-f131-4a8b-b59d-2bf7d58547ef",
+                "amount": 246.9085099055057
+            }
+        ]
+    },
+    {
+        "id": "e8951829-b59f-4894-99da-dbbff4a73982",
+        "order_number": "PO-2025-0010",
+        "invoice_number": "INV-00010",
+        "date": "2025-03-26",
+        "vendor_id": "856812e3-de34-4885-87a8-cd656780221e",
+        "vendor_name": "Furniture World",
+        "line_items": [
+            {
+                "description": "Desk",
+                "quantity": 1,
+                "unit_price": 349.99,
+                "received": true
+            },
+            {
+                "description": "Conference Table",
+                "quantity": 4,
+                "unit_price": 899.99,
+                "received": false
+            },
+            {
+                "description": "File Cabinet",
+                "quantity": 8,
+                "unit_price": 149.99,
+                "received": true
+            },
+            {
+                "description": "File Cabinet",
+                "quantity": 6,
+                "unit_price": 149.99,
+                "received": false
+            },
+            {
+                "description": "Desk",
+                "quantity": 3,
+                "unit_price": 349.99,
+                "received": true
+            }
+        ],
+        "budgets": [
+            {
+                "budget_id": "9bde8b64-4ecd-48ce-bbcb-2a14b374e7c8",
+                "amount": 4230.644273877559
+            },
+            {
+                "budget_id": "ea3f3b18-f131-4a8b-b59d-2bf7d58547ef",
+                "amount": 2869.135726122442
+            }
+        ]
+    },
+    {
+        "id": "502cd5c9-5dad-4abc-ae05-6f93b88173f4",
+        "order_number": "PO-2025-0011",
+        "invoice_number": "INV-00011",
+        "date": "2025-02-11",
+        "vendor_id": "a6c3213f-ac8d-4747-bc1a-ff0daf4d4385",
+        "vendor_name": "Office Supplies Co.",
+        "line_items": [
+            {
+                "description": "Sticky Notes (Pack)",
+                "quantity": 7,
+                "unit_price": 8.49,
+                "received": false
+            },
+            {
+                "description": "Sticky Notes (Pack)",
+                "quantity": 2,
+                "unit_price": 8.49,
+                "received": true
+            },
+            {
+                "description": "Sticky Notes (Pack)",
+                "quantity": 2,
+                "unit_price": 8.49,
+                "received": false
+            },
+            {
+                "description": "Copy Paper (Case)",
+                "quantity": 8,
+                "unit_price": 45.99,
+                "received": true
+            }
+        ],
+        "budgets": [
+            {
+                "budget_id": "a19b08c1-e37e-4735-a382-54dcd73d0247",
+                "amount": 195.72027592493265
+            },
+            {
+                "budget_id": "1918d79d-6ed7-4299-9ceb-54466d774acb",
+                "amount": 265.58972407506735
+            }
+        ]
+    },
+    {
+        "id": "33e29a83-41d8-4540-b6f3-fb657aff9953",
+        "order_number": "PO-2025-0012",
+        "invoice_number": "",
+        "date": "2025-06-20",
+        "vendor_id": "7f0fadf1-d734-4c67-afc1-95803a5cbf5b",
+        "vendor_name": "Electronics Warehouse",
+        "line_items": [
+            {
+                "description": "Wireless Headphones",
+                "quantity": 5,
+                "unit_price": 129.99,
+                "received": false
+            }
+        ],
+        "budgets": [
+            {
+                "budget_id": "9bde8b64-4ecd-48ce-bbcb-2a14b374e7c8",
+                "amount": 180.27104020327317
+            },
+            {
+                "budget_id": "ea3f3b18-f131-4a8b-b59d-2bf7d58547ef",
+                "amount": 469.6789597967269
+            }
+        ]
+    },
+    {
+        "id": "fb542b10-f4aa-4ccb-93ee-d9cda173a4c7",
+        "order_number": "PO-2025-0013",
+        "invoice_number": "",
+        "date": "2025-06-26",
+        "vendor_id": "a6c3213f-ac8d-4747-bc1a-ff0daf4d4385",
+        "vendor_name": "Office Supplies Co.",
+        "line_items": [
+            {
+                "description": "Sticky Notes (Pack)",
+                "quantity": 10,
+                "unit_price": 8.49,
+                "received": true
+            },
+            {
+                "description": "Ballpoint Pens (Box)",
+                "quantity": 6,
+                "unit_price": 12.99,
+                "received": false
+            },
+            {
+                "description": "Sticky Notes (Pack)",
+                "quantity": 7,
+                "unit_price": 8.49,
+                "received": true
+            },
+            {
+                "description": "Sticky Notes (Pack)",
+                "quantity": 1,
+                "unit_price": 8.49,
+                "received": true
+            }
+        ],
+        "budgets": [
+            {
+                "budget_id": "9bde8b64-4ecd-48ce-bbcb-2a14b374e7c8",
+                "amount": 230.76
+            }
+        ]
+    },
+    {
+        "id": "ca03e0fc-1283-4010-ae56-5db384d31af3",
+        "order_number": "PO-2025-0014",
+        "invoice_number": "INV-00014",
+        "date": "2025-04-02",
+        "vendor_id": "7f0fadf1-d734-4c67-afc1-95803a5cbf5b",
+        "vendor_name": "Electronics Warehouse",
+        "line_items": [
+            {
+                "description": "Projector",
+                "quantity": 6,
+                "unit_price": 599.99,
+                "received": true
+            }
+        ],
+        "budgets": [
+            {
+                "budget_id": "ea3f3b18-f131-4a8b-b59d-2bf7d58547ef",
+                "amount": 2888.062451093616
+            },
+            {
+                "budget_id": "a19b08c1-e37e-4735-a382-54dcd73d0247",
+                "amount": 711.877548906384
+            }
+        ]
+    },
+    {
+        "id": "a923912a-2b86-409e-bff0-7d062a7a6c0a",
+        "order_number": "PO-2025-0015",
+        "invoice_number": "INV-00015",
+        "date": "2025-05-08",
+        "vendor_id": "7f0fadf1-d734-4c67-afc1-95803a5cbf5b",
+        "vendor_name": "Electronics Warehouse",
+        "line_items": [
+            {
+                "description": "Power Strip",
+                "quantity": 4,
+                "unit_price": 24.99,
+                "received": false
+            },
+            {
+                "description": "Projector",
+                "quantity": 8,
+                "unit_price": 599.99,
+                "received": true
+            },
+            {
+                "description": "Projector",
+                "quantity": 1,
+                "unit_price": 599.99,
+                "received": true
+            },
+            {
+                "description": "Webcam",
+                "quantity": 2,
+                "unit_price": 79.99,
+                "received": true
+            },
+            {
+                "description": "Webcam",
+                "quantity": 6,
+                "unit_price": 79.99,
+                "received": true
+            }
+        ],
+        "budgets": [
+            {
+                "budget_id": "9bde8b64-4ecd-48ce-bbcb-2a14b374e7c8",
+                "amount": 6139.79
+            }
+        ]
+    },
+    {
+        "id": "f96da535-3df5-4369-9f5e-424f5e597711",
+        "order_number": "PO-2025-0016",
+        "invoice_number": "",
+        "date": "2025-10-04",
+        "vendor_id": "7f0fadf1-d734-4c67-afc1-95803a5cbf5b",
+        "vendor_name": "Electronics Warehouse",
+        "line_items": [
+            {
+                "description": "Power Strip",
+                "quantity": 7,
+                "unit_price": 24.99,
+                "received": false
+            },
+            {
+                "description": "Projector",
+                "quantity": 6,
+                "unit_price": 599.99,
+                "received": true
+            },
+            {
+                "description": "Wireless Headphones",
+                "quantity": 8,
+                "unit_price": 129.99,
+                "received": true
+            },
+            {
+                "description": "Projector",
+                "quantity": 9,
+                "unit_price": 599.99,
+                "received": true
+            },
+            {
+                "description": "Webcam",
+                "quantity": 8,
+                "unit_price": 79.99,
+                "received": false
+            }
+        ],
+        "budgets": [
+            {
+                "budget_id": "9bde8b64-4ecd-48ce-bbcb-2a14b374e7c8",
+                "amount": 1813.5271744627128
+            },
+            {
+                "budget_id": "ea3f3b18-f131-4a8b-b59d-2bf7d58547ef",
+                "amount": 9041.092825537287
+            }
+        ]
+    },
+    {
+        "id": "9c585427-1cd2-4b3e-b920-6fe0bbc88455",
+        "order_number": "PO-2025-0017",
+        "invoice_number": "INV-00017",
+        "date": "2025-01-19",
+        "vendor_id": "841e7a4d-f6ef-4984-ad4a-7ee245daf3c4",
+        "vendor_name": "Paper Products Ltd.",
+        "line_items": [
+            {
+                "description": "Business Cards (Box)",
+                "quantity": 5,
+                "unit_price": 29.99,
+                "received": true
+            },
+            {
+                "description": "Envelopes (Box)",
+                "quantity": 6,
+                "unit_price": 15.99,
+                "received": true
+            }
+        ],
+        "budgets": [
+            {
+                "budget_id": "1918d79d-6ed7-4299-9ceb-54466d774acb",
+                "amount": 245.89
+            }
+        ]
+    },
+    {
+        "id": "a5154c12-cb83-4a81-b6c2-4dfd1f222ca4",
+        "order_number": "PO-2025-0018",
+        "invoice_number": "INV-00018",
+        "date": "2025-08-02",
+        "vendor_id": "7f0fadf1-d734-4c67-afc1-95803a5cbf5b",
+        "vendor_name": "Electronics Warehouse",
+        "line_items": [
+            {
+                "description": "Speakers",
+                "quantity": 4,
+                "unit_price": 89.99,
+                "received": true
+            },
+            {
+                "description": "Speakers",
+                "quantity": 6,
+                "unit_price": 89.99,
+                "received": false
+            },
+            {
+                "description": "Speakers",
+                "quantity": 10,
+                "unit_price": 89.99,
+                "received": true
+            }
+        ],
+        "budgets": [
+            {
+                "budget_id": "1918d79d-6ed7-4299-9ceb-54466d774acb",
+                "amount": 1799.8
+            }
+        ]
+    },
+    {
+        "id": "d399c002-c066-4fd1-a779-e1b93568514b",
+        "order_number": "PO-2025-0019",
+        "invoice_number": "INV-00019",
+        "date": "2025-04-02",
+        "vendor_id": "841e7a4d-f6ef-4984-ad4a-7ee245daf3c4",
+        "vendor_name": "Paper Products Ltd.",
+        "line_items": [
+            {
+                "description": "Business Cards (Box)",
+                "quantity": 10,
+                "unit_price": 29.99,
+                "received": false
+            },
+            {
+                "description": "Business Cards (Box)",
+                "quantity": 8,
+                "unit_price": 29.99,
+                "received": true
+            },
+            {
+                "description": "Presentation Folders",
+                "quantity": 1,
+                "unit_price": 35.99,
+                "received": true
+            },
+            {
+                "description": "Presentation Folders",
+                "quantity": 4,
+                "unit_price": 35.99,
+                "received": true
+            },
+            {
+                "description": "Presentation Folders",
+                "quantity": 9,
+                "unit_price": 35.99,
+                "received": true
+            }
+        ],
+        "budgets": [
+            {
+                "budget_id": "1918d79d-6ed7-4299-9ceb-54466d774acb",
+                "amount": 1043.68
+            }
+        ]
+    },
+    {
+        "id": "d3dadc93-f21b-4470-8c03-ca993defc3c0",
+        "order_number": "PO-2025-0020",
+        "invoice_number": "INV-00020",
+        "date": "2025-11-14",
+        "vendor_id": "7f0fadf1-d734-4c67-afc1-95803a5cbf5b",
+        "vendor_name": "Electronics Warehouse",
+        "line_items": [
+            {
+                "description": "Wireless Headphones",
+                "quantity": 2,
+                "unit_price": 129.99,
+                "received": true
+            },
+            {
+                "description": "Wireless Headphones",
+                "quantity": 7,
+                "unit_price": 129.99,
+                "received": false
+            }
+        ],
+        "budgets": [
+            {
+                "budget_id": "9bde8b64-4ecd-48ce-bbcb-2a14b374e7c8",
+                "amount": 710.0893776504981
+            },
+            {
+                "budget_id": "a19b08c1-e37e-4735-a382-54dcd73d0247",
+                "amount": 459.8206223495019
+            }
+        ]
+    },
+    {
+        "id": "26088476-2902-426e-be78-5adcc5d0e2cd",
+        "order_number": "PO-2024-0001",
+        "invoice_number": "INV-00001",
+        "date": "2024-11-21",
+        "vendor_id": "3b749d13-1d85-4dc6-aeae-baa3305f846d",
+        "vendor_name": "Tech Solutions Inc.",
+        "line_items": [
+            {
+                "description": "Laptop Computer",
+                "quantity": 7,
+                "unit_price": 999.99,
+                "received": true
+            },
+            {
+                "description": "Mouse",
+                "quantity": 1,
+                "unit_price": 29.99,
+                "received": true
+            },
+            {
+                "description": "Laptop Computer",
+                "quantity": 10,
+                "unit_price": 999.99,
+                "received": true
+            }
+        ],
+        "budgets": [
+            {
+                "budget_id": "9bde8b64-4ecd-48ce-bbcb-2a14b374e7c8",
+                "amount": 17029.82
+            }
+        ]
+    },
+    {
+        "id": "3f47e015-929f-40fb-940f-efa242801030",
+        "order_number": "PO-2024-0002",
+        "invoice_number": "INV-00002",
+        "date": "2024-06-18",
+        "vendor_id": "7f0fadf1-d734-4c67-afc1-95803a5cbf5b",
+        "vendor_name": "Electronics Warehouse",
+        "line_items": [
+            {
+                "description": "Speakers",
+                "quantity": 3,
+                "unit_price": 89.99,
+                "received": true
+            },
+            {
+                "description": "Power Strip",
+                "quantity": 2,
+                "unit_price": 24.99,
+                "received": true
+            },
+            {
+                "description": "Wireless Headphones",
+                "quantity": 9,
+                "unit_price": 129.99,
+                "received": true
+            }
+        ],
+        "budgets": [
+            {
+                "budget_id": "1918d79d-6ed7-4299-9ceb-54466d774acb",
+                "amount": 1489.8600000000001
+            }
+        ]
+    },
+    {
+        "id": "f18767fc-15da-444f-91eb-0c71299bc046",
+        "order_number": "PO-2024-0003",
+        "invoice_number": "",
+        "date": "2024-02-04",
+        "vendor_id": "3b749d13-1d85-4dc6-aeae-baa3305f846d",
+        "vendor_name": "Tech Solutions Inc.",
+        "line_items": [
+            {
+                "description": "Keyboard",
+                "quantity": 5,
+                "unit_price": 59.99,
+                "received": true
+            },
+            {
+                "description": "Mouse",
+                "quantity": 6,
+                "unit_price": 29.99,
+                "received": true
+            },
+            {
+                "description": "Keyboard",
+                "quantity": 10,
+                "unit_price": 59.99,
+                "received": true
+            },
+            {
+                "description": "Desktop Computer",
+                "quantity": 8,
+                "unit_price": 799.99,
+                "received": true
+            }
+        ],
+        "budgets": [
+            {
+                "budget_id": "768a90fa-ceee-49be-8299-230b73dfe499",
+                "amount": 7479.71
+            }
+        ]
+    },
+    {
+        "id": "df720ccd-47f3-4ec7-ae3b-0bdf904c6a3c",
+        "order_number": "PO-2024-0004",
+        "invoice_number": "INV-00004",
+        "date": "2024-12-25",
+        "vendor_id": "856812e3-de34-4885-87a8-cd656780221e",
+        "vendor_name": "Furniture World",
+        "line_items": [
+            {
+                "description": "Desk",
+                "quantity": 10,
+                "unit_price": 349.99,
+                "received": true
+            },
+            {
+                "description": "Bookshelf",
+                "quantity": 10,
+                "unit_price": 179.99,
+                "received": true
+            },
+            {
+                "description": "Conference Table",
+                "quantity": 8,
+                "unit_price": 899.99,
+                "received": true
+            }
+        ],
+        "budgets": [
+            {
+                "budget_id": "1918d79d-6ed7-4299-9ceb-54466d774acb",
+                "amount": 8699.562249688404
+            },
+            {
+                "budget_id": "9bde8b64-4ecd-48ce-bbcb-2a14b374e7c8",
+                "amount": 3800.157750311597
+            }
+        ]
+    },
+    {
+        "id": "29e87a74-2728-47a5-8c6a-674340dac9d1",
+        "order_number": "PO-2024-0005",
+        "invoice_number": "INV-00005",
+        "date": "2024-04-17",
+        "vendor_id": "856812e3-de34-4885-87a8-cd656780221e",
+        "vendor_name": "Furniture World",
+        "line_items": [
+            {
+                "description": "Desk",
+                "quantity": 3,
+                "unit_price": 349.99,
+                "received": true
+            },
+            {
+                "description": "Desk",
+                "quantity": 9,
+                "unit_price": 349.99,
+                "received": true
+            },
+            {
+                "description": "Office Chair",
+                "quantity": 8,
+                "unit_price": 199.99,
+                "received": true
+            },
+            {
+                "description": "Bookshelf",
+                "quantity": 4,
+                "unit_price": 179.99,
+                "received": true
+            },
+            {
+                "description": "Conference Table",
+                "quantity": 9,
+                "unit_price": 899.99,
+                "received": true
+            }
+        ],
+        "budgets": [
+            {
+                "budget_id": "ea3f3b18-f131-4a8b-b59d-2bf7d58547ef",
+                "amount": 14619.67
+            }
+        ]
+    },
+    {
+        "id": "0ec7987d-7b84-4aed-ad7c-cdce69c46ede",
+        "order_number": "PO-2024-0006",
+        "invoice_number": "INV-00006",
+        "date": "2024-05-12",
+        "vendor_id": "7f0fadf1-d734-4c67-afc1-95803a5cbf5b",
+        "vendor_name": "Electronics Warehouse",
+        "line_items": [
+            {
+                "description": "Webcam",
+                "quantity": 3,
+                "unit_price": 79.99,
+                "received": true
+            },
+            {
+                "description": "Webcam",
+                "quantity": 5,
+                "unit_price": 79.99,
+                "received": true
+            }
+        ],
+        "budgets": [
+            {
+                "budget_id": "a19b08c1-e37e-4735-a382-54dcd73d0247",
+                "amount": 639.92
+            }
+        ]
+    },
+    {
+        "id": "b1b24af2-1f9b-4bab-95f8-9284c4140761",
+        "order_number": "PO-2024-0007",
+        "invoice_number": "INV-00007",
+        "date": "2024-01-26",
+        "vendor_id": "856812e3-de34-4885-87a8-cd656780221e",
+        "vendor_name": "Furniture World",
+        "line_items": [
+            {
+                "description": "Office Chair",
+                "quantity": 2,
+                "unit_price": 199.99,
+                "received": true
+            },
+            {
+                "description": "Bookshelf",
+                "quantity": 10,
+                "unit_price": 179.99,
+                "received": true
+            },
+            {
+                "description": "Conference Table",
+                "quantity": 2,
+                "unit_price": 899.99,
+                "received": true
+            },
+            {
+                "description": "Conference Table",
+                "quantity": 1,
+                "unit_price": 899.99,
+                "received": true
+            },
+            {
+                "description": "Desk",
+                "quantity": 6,
+                "unit_price": 349.99,
+                "received": true
+            }
+        ],
+        "budgets": [
+            {
+                "budget_id": "1918d79d-6ed7-4299-9ceb-54466d774acb",
+                "amount": 6999.79
+            }
+        ]
+    },
+    {
+        "id": "0410ff9e-dc25-47cc-8cc6-edf0486b3852",
+        "order_number": "PO-2024-0008",
+        "invoice_number": "INV-00008",
+        "date": "2024-03-13",
+        "vendor_id": "841e7a4d-f6ef-4984-ad4a-7ee245daf3c4",
+        "vendor_name": "Paper Products Ltd.",
+        "line_items": [
+            {
+                "description": "Printer Paper (Case)",
+                "quantity": 2,
+                "unit_price": 42.99,
+                "received": true
+            },
+            {
+                "description": "Printer Paper (Case)",
+                "quantity": 9,
+                "unit_price": 42.99,
+                "received": true
+            },
+            {
+                "description": "Business Cards (Box)",
+                "quantity": 4,
+                "unit_price": 29.99,
+                "received": true
+            }
+        ],
+        "budgets": [
+            {
+                "budget_id": "ea3f3b18-f131-4a8b-b59d-2bf7d58547ef",
+                "amount": 341.9977165965473
+            },
+            {
+                "budget_id": "768a90fa-ceee-49be-8299-230b73dfe499",
+                "amount": 250.8522834034527
+            }
+        ]
+    },
+    {
+        "id": "7d8b1e8c-fa16-443d-9595-596d9d1f002b",
+        "order_number": "PO-2024-0009",
+        "invoice_number": "INV-00009",
+        "date": "2024-10-19",
+        "vendor_id": "3b749d13-1d85-4dc6-aeae-baa3305f846d",
+        "vendor_name": "Tech Solutions Inc.",
+        "line_items": [
+            {
+                "description": "Keyboard",
+                "quantity": 5,
+                "unit_price": 59.99,
+                "received": true
+            },
+            {
+                "description": "Monitor",
+                "quantity": 4,
+                "unit_price": 249.99,
+                "received": true
+            },
+            {
+                "description": "Monitor",
+                "quantity": 8,
+                "unit_price": 249.99,
+                "received": true
+            }
+        ],
+        "budgets": [
+            {
+                "budget_id": "9bde8b64-4ecd-48ce-bbcb-2a14b374e7c8",
+                "amount": 1873.4967976614682
+            },
+            {
+                "budget_id": "768a90fa-ceee-49be-8299-230b73dfe499",
+                "amount": 1426.3332023385317
+            }
+        ]
+    },
+    {
+        "id": "41ca6bbf-bbac-4321-8bfa-40d3d1f887df",
+        "order_number": "PO-2024-0010",
+        "invoice_number": "INV-00010",
+        "date": "2024-08-03",
+        "vendor_id": "856812e3-de34-4885-87a8-cd656780221e",
+        "vendor_name": "Furniture World",
+        "line_items": [
+            {
+                "description": "Office Chair",
+                "quantity": 7,
+                "unit_price": 199.99,
+                "received": true
+            },
+            {
+                "description": "File Cabinet",
+                "quantity": 6,
+                "unit_price": 149.99,
+                "received": true
+            },
+            {
+                "description": "Bookshelf",
+                "quantity": 9,
+                "unit_price": 179.99,
+                "received": true
+            },
+            {
+                "description": "Bookshelf",
+                "quantity": 9,
+                "unit_price": 179.99,
+                "received": true
+            },
+            {
+                "description": "Bookshelf",
+                "quantity": 5,
+                "unit_price": 179.99,
+                "received": true
+            }
+        ],
+        "budgets": [
+            {
+                "budget_id": "768a90fa-ceee-49be-8299-230b73dfe499",
+                "amount": 2368.7583408155715
+            },
+            {
+                "budget_id": "ea3f3b18-f131-4a8b-b59d-2bf7d58547ef",
+                "amount": 4070.881659184429
+            }
+        ]
+    }
+]

@@ -1,0 +1,42 @@
+[
+    {
+        "id": "a6c3213f-ac8d-4747-bc1a-ff0daf4d4385",
+        "name": "Office Supplies Co.",
+        "contact": "John Smith",
+        "phone": "555-123-4567",
+        "email": "john@officesupplies.com",
+        "address": "123 Main St."
+    },
+    {
+        "id": "3b749d13-1d85-4dc6-aeae-baa3305f846d",
+        "name": "Tech Solutions Inc.",
+        "contact": "Alice Johnson",
+        "phone": "555-987-6543",
+        "email": "alice@techsolutions.com",
+        "address": "456 Tech Blvd."
+    },
+    {
+        "id": "856812e3-de34-4885-87a8-cd656780221e",
+        "name": "Furniture World",
+        "contact": "Bob Brown",
+        "phone": "555-456-7890",
+        "email": "bob@furnitureworld.com",
+        "address": "789 Oak Ave."
+    },
+    {
+        "id": "841e7a4d-f6ef-4984-ad4a-7ee245daf3c4",
+        "name": "Paper Products Ltd.",
+        "contact": "Carol Davis",
+        "phone": "555-222-3333",
+        "email": "carol@paperproducts.com",
+        "address": "321 Pine St."
+    },
+    {
+        "id": "7f0fadf1-d734-4c67-afc1-95803a5cbf5b",
+        "name": "Electronics Warehouse",
+        "contact": "David Wilson",
+        "phone": "555-444-5555",
+        "email": "david@electronicswarehouse.com",
+        "address": "654 Elm St."
+    }
+]
