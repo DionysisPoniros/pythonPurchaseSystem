@@ -208,13 +208,50 @@ class BudgetReportView:
             tk.Label(chart_frame, text="No spending data available for selected year").pack(pady=20)
 
     def export_report(self):
-        """Export budget report to CSV"""
-        # Ask for save location
-        file_path = filedialog.asksaveasfilename(
-            defaultextension=".csv",
-            filetypes=[("CSV files", "*.csv"), ("All files", "*.*")],
-            title="Export Budget Report"
-        )
+        """Export budget report to CSV or PDF"""
+        # Ask for export format
+        export_format = messagebox.askquestion("Export Format",
+                                               "Do you want to export as PDF? (No will export as CSV)")
+
+        if export_format == 'yes':
+            # PDF export
+            file_path = filedialog.asksaveasfilename(
+                defaultextension=".pdf",
+                filetypes=[("PDF files", "*.pdf"), ("All files", "*.*")],
+                title="Export Budget Report as PDF"
+            )
+
+            if not file_path:
+                return
+
+            # Get report data
+            selected_year = int(self.year_var.get())
+            budget_data = self.controllers["budget"].calculate_budget_usage(selected_year)
+            monthly_data = self.controllers["report"].generate_monthly_spending(selected_year)
+
+            # Import PDF exporter
+            from utils.pdf_exporter import PDFExporter
+            success, message = PDFExporter.export_budget_report(budget_data, monthly_data, selected_year, file_path)
+
+        else:
+            # CSV export
+            file_path = filedialog.asksaveasfilename(
+                defaultextension=".csv",
+                filetypes=[("CSV files", "*.csv"), ("All files", "*.*")],
+                title="Export Budget Report as CSV"
+            )
+
+            if not file_path:
+                return
+
+            # Export report
+            selected_year = int(self.year_var.get())
+            success, message = self.controllers["report"].export_budget_report(selected_year, file_path)
+
+        if success:
+            messagebox.showinfo("Export Successful", message)
+        else:
+            messagebox.showerror("Export Failed", message)
 
         if not file_path:
             return
@@ -429,13 +466,50 @@ class VendorReportView:
             tk.Label(self.performance_tab, text="No vendor data available for selected year").pack(pady=20)
 
     def export_report(self):
-        """Export vendor report to CSV"""
-        # Ask for save location
-        file_path = filedialog.asksaveasfilename(
-            defaultextension=".csv",
-            filetypes=[("CSV files", "*.csv"), ("All files", "*.*")],
-            title="Export Vendor Report"
-        )
+        """Export budget report to CSV or PDF"""
+        # Ask for export format
+        export_format = messagebox.askquestion("Export Format",
+                                               "Do you want to export as PDF? (No will export as CSV)")
+
+        if export_format == 'yes':
+            # PDF export
+            file_path = filedialog.asksaveasfilename(
+                defaultextension=".pdf",
+                filetypes=[("PDF files", "*.pdf"), ("All files", "*.*")],
+                title="Export Budget Report as PDF"
+            )
+
+            if not file_path:
+                return
+
+            # Get report data
+            selected_year = int(self.year_var.get())
+            budget_data = self.controllers["budget"].calculate_budget_usage(selected_year)
+            monthly_data = self.controllers["report"].generate_monthly_spending(selected_year)
+
+            # Import PDF exporter
+            from utils.pdf_exporter import PDFExporter
+            success, message = PDFExporter.export_budget_report(budget_data, monthly_data, selected_year, file_path)
+
+        else:
+            # CSV export
+            file_path = filedialog.asksaveasfilename(
+                defaultextension=".csv",
+                filetypes=[("CSV files", "*.csv"), ("All files", "*.*")],
+                title="Export Budget Report as CSV"
+            )
+
+            if not file_path:
+                return
+
+            # Export report
+            selected_year = int(self.year_var.get())
+            success, message = self.controllers["report"].export_budget_report(selected_year, file_path)
+
+        if success:
+            messagebox.showinfo("Export Successful", message)
+        else:
+            messagebox.showerror("Export Failed", message)
 
         if not file_path:
             return

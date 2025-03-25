@@ -1,19 +1,20 @@
+# controllers/purchase_controller.py
 from datetime import datetime
 from models.purchase import Purchase
 
 
 class PurchaseController:
-    def __init__(self, data_manager):
-        self.data_manager = data_manager
+    def __init__(self, db_manager):
+        self.db_manager = db_manager
 
     def get_all_purchases(self):
         """Get all purchases as Purchase objects"""
-        purchases_data = self.data_manager.get_purchases()
+        purchases_data = self.db_manager.get_purchases()
         return [Purchase.from_dict(p) for p in purchases_data]
 
     def get_purchase_by_id(self, purchase_id):
         """Get a purchase by ID"""
-        purchases = self.data_manager.get_purchases()
+        purchases = self.db_manager.get_purchases()
         purchase_data = next((p for p in purchases if p.get("id") == purchase_id), None)
         if purchase_data:
             return Purchase.from_dict(purchase_data)
@@ -21,24 +22,18 @@ class PurchaseController:
 
     def add_purchase(self, purchase):
         """Add a new purchase"""
-        purchases = self.data_manager.get_purchases()
-        purchases.append(purchase.to_dict())
-        self.data_manager.save_purchases(purchases)
+        result = self.db_manager.save_purchase(purchase.to_dict())
+        return result is not None
 
     def update_purchase(self, purchase):
         """Update an existing purchase"""
-        purchases = self.data_manager.get_purchases()
-        for i, p in enumerate(purchases):
-            if p.get("id") == purchase.id:
-                purchases[i] = purchase.to_dict()
-                break
-        self.data_manager.save_purchases(purchases)
+        result = self.db_manager.save_purchase(purchase.to_dict())
+        return result is not None
 
     def delete_purchase(self, purchase_id):
         """Delete a purchase by ID"""
-        purchases = self.data_manager.get_purchases()
-        purchases = [p for p in purchases if p.get("id") != purchase_id]
-        self.data_manager.save_purchases(purchases)
+        success, message = self.db_manager.delete_purchase(purchase_id)
+        return success
 
     def get_purchase_by_year(self, year):
         """Get purchases for a specific year"""
@@ -70,3 +65,32 @@ class PurchaseController:
 
         self.update_purchase(purchase)
         return True
+
+    # New methods for approval workflow
+    def approve_purchase(self, purchase_id, approver):
+        """Approve a purchase"""
+        purchase = self.get_purchase_by_id(purchase_id)
+        if not purchase:
+            return False, "Purchase not found"
+
+        purchase.approve(approver)
+        result = self.update_purchase(purchase)
+        if result:
+            return True, "Purchase approved successfully"
+        return False, "Failed to approve purchase"
+
+    def reject_purchase(self, purchase_id, approver, notes=""):
+        """Reject a purchase"""
+        purchase = self.get_purchase_by_id(purchase_id)
+        if not purchase:
+            return False, "Purchase not found"
+
+        purchase.reject(approver, notes)
+        result = self.update_purchase(purchase)
+        if result:
+            return True, "Purchase rejected successfully"
+        return False, "Failed to reject purchase"
+
+    def get_purchases_by_approval_status(self, status="Pending"):
+        """Get purchases by approval status"""
+        return [p for p in self.get_all_purchases() if p.status == status]

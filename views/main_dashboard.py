@@ -9,7 +9,7 @@ from views.budget_views import BudgetListView
 from views.report_views import BudgetReportView, VendorReportView
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.pyplot as plt
-
+from tkinter import messagebox
 
 class MainDashboard:
     def __init__(self, parent, controllers, show_view_callback):
@@ -52,6 +52,8 @@ class MainDashboard:
         self.create_stats_cards(left_frame)
         self.create_action_buttons(center_frame)
         self.create_charts_and_activity(right_frame)
+        # Add a menu bar
+
 
     def create_stats_cards(self, parent):
         # Create stats cards for key metrics
@@ -209,3 +211,54 @@ class MainDashboard:
     def hide(self):
         """Hide this view"""
         self.frame.pack_forget()
+
+    def create_action_buttons(self, parent):
+        actions_card = tk.LabelFrame(parent, text="Actions", font=("Arial", 12, "bold"))
+        actions_card.pack(fill=tk.BOTH, expand=True, pady=10)
+
+        actions = [
+            ("View Purchases", self.view_purchases, "icons/purchases.png"),
+            ("Add Purchase", self.add_purchase, "icons/add.png"),
+            ("Manage Vendors", self.manage_vendors, "icons/vendors.png"),
+            ("Manage Budgets", self.manage_budgets, "icons/budgets.png"),
+            ("Receiving Dashboard", self.receiving_dashboard, "icons/receiving.png"),
+            ("Approval Dashboard", self.approval_dashboard, "icons/approval.png"),  # New button
+            ("Budget Reports", self.budget_reports, "icons/reports.png"),
+            ("Vendor Reports", self.vendor_reports, "icons/vendors.png"),
+            ("Import Data", self.import_data, "icons/import.png"),  # New button
+            ("Exit System", self.exit_system, "icons/exit.png")
+        ]
+
+        # Create button grid
+        row, col = 0, 0
+        for text, command, icon_path in actions:
+            ActionButton(actions_card, text, command, icon_path, row, col)
+            col += 1
+            if col > 2:  # 3 buttons per row
+                col = 0
+                row += 1
+
+    def approval_dashboard(self):
+        """Open approval dashboard view"""
+        from views.approval_view import ApprovalDashboardView
+        approval_view = ApprovalDashboardView(self.parent, self.controllers, self.show_view)
+        self.show_view(approval_view)
+
+    def import_data(self):
+        """Open import data dialog"""
+        from tkinter import filedialog
+        file_path = filedialog.askopenfilename(
+            defaultextension=".csv",
+            filetypes=[("CSV files", "*.csv"), ("All files", "*.*")],
+            title="Import Data from CSV"
+        )
+
+        if file_path:
+            success, message = self.controllers["purchase"].data_manager.import_purchases_from_csv(file_path)
+
+            if success:
+                messagebox.showinfo("Import Successful", message)
+                self.refresh_dashboard()
+            else:
+                messagebox.showerror("Import Failed", message)
+

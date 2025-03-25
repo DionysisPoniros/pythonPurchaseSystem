@@ -1,12 +1,12 @@
+# controllers/report_controller.py
 from datetime import datetime
 import numpy as np
 import csv
 import os
 
-
 class ReportController:
-    def __init__(self, data_manager):
-        self.data_manager = data_manager
+    def __init__(self, db_manager):
+        self.db_manager = db_manager
         self.purchase_controller = None
         self.budget_controller = None
         self.vendor_controller = None

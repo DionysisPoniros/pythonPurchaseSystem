@@ -1,0 +1,20 @@
+2025-03-25 18:50:25,376 - database_manager - INFO - Database initialized at purchase_system.db
+2025-03-25 18:50:35,514 - database_manager - INFO - Database initialized at purchase_system.db
+2025-03-25 18:50:47,527 - matplotlib.category - INFO - Using categorical units to plot a list of strings that are all parsable as floats or dates. If these strings should be plotted as numbers, cast to the appropriate data type before plotting.
+2025-03-25 18:50:47,529 - matplotlib.category - INFO - Using categorical units to plot a list of strings that are all parsable as floats or dates. If these strings should be plotted as numbers, cast to the appropriate data type before plotting.
+2025-03-25 18:51:40,568 - database_manager - INFO - Database initialized at purchase_system.db
+2025-03-25 18:52:41,628 - database_manager - INFO - Database initialized at purchase_system.db
+2025-03-25 18:53:21,066 - matplotlib.category - INFO - Using categorical units to plot a list of strings that are all parsable as floats or dates. If these strings should be plotted as numbers, cast to the appropriate data type before plotting.
+2025-03-25 18:53:21,067 - matplotlib.category - INFO - Using categorical units to plot a list of strings that are all parsable as floats or dates. If these strings should be plotted as numbers, cast to the appropriate data type before plotting.
+2025-03-25 18:56:41,927 - database_manager - INFO - Database initialized at purchase_system.db
+2025-03-25 18:58:14,501 - matplotlib.category - INFO - Using categorical units to plot a list of strings that are all parsable as floats or dates. If these strings should be plotted as numbers, cast to the appropriate data type before plotting.
+2025-03-25 18:58:14,503 - matplotlib.category - INFO - Using categorical units to plot a list of strings that are all parsable as floats or dates. If these strings should be plotted as numbers, cast to the appropriate data type before plotting.
+2025-03-25 19:08:25,582 - database_manager - INFO - Database initialized at purchase_system.db
+2025-03-25 19:16:51,765 - database_manager - INFO - Database initialized at purchase_system.db
+2025-03-25 19:19:57,174 - database_manager - INFO - Database initialized at purchase_system.db
+2025-03-25 19:20:34,200 - database_manager - INFO - Database initialized at purchase_system.db
+2025-03-25 19:22:03,472 - database_manager - INFO - Database initialized at purchase_system.db
+2025-03-25 19:22:34,210 - database_manager - INFO - Database backup created at backups\purchase_system_20250325_192234.db
+2025-03-25 19:23:01,334 - database_manager - INFO - Database initialized at purchase_system.db
+2025-03-25 19:23:43,200 - database_manager - INFO - Database initialized at purchase_system.db
+2025-03-25 19:27:07,244 - database_manager - INFO - Database initialized at purchase_system.db

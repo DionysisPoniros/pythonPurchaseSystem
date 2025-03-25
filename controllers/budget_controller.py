@@ -1,10 +1,10 @@
+# controllers/budget_controller.py
 from datetime import datetime
 from models.budget import Budget
 
-
 class BudgetController:
-    def __init__(self, data_manager):
-        self.data_manager = data_manager
+    def __init__(self, db_manager):
+        self.db_manager = db_manager
         self.purchase_controller = None  # Will be set after initialization
 
     def set_purchase_controller(self, purchase_controller):
@@ -13,12 +13,12 @@ class BudgetController:
 
     def get_all_budgets(self):
         """Get all budgets as Budget objects"""
-        budgets_data = self.data_manager.get_budgets()
+        budgets_data = self.db_manager.get_budgets()
         return [Budget.from_dict(b) for b in budgets_data]
 
     def get_budget_by_id(self, budget_id):
         """Get a budget by ID"""
-        budgets = self.data_manager.get_budgets()
+        budgets = self.db_manager.get_budgets()
         budget_data = next((b for b in budgets if b.get("id") == budget_id), None)
         if budget_data:
             return Budget.from_dict(budget_data)
@@ -26,48 +26,33 @@ class BudgetController:
 
     def add_budget(self, budget):
         """Add a new budget"""
-        budgets = self.data_manager.get_budgets()
+        budgets = self.db_manager.get_budgets()
 
         # Check if budget code already exists
         if any(b.get("code") == budget.code for b in budgets):
             return False, "A budget with this code already exists"
 
-        budgets.append(budget.to_dict())
-        self.data_manager.save_budgets(budgets)
-        return True, "Budget added successfully"
+        result = self.db_manager.save_budget(budget.to_dict())
+        if result:
+            return True, "Budget added successfully"
+        return False, "Failed to add budget"
 
     def update_budget(self, budget):
         """Update an existing budget"""
-        budgets = self.data_manager.get_budgets()
+        budgets = self.db_manager.get_budgets()
 
         # Check if budget code already exists (for a different budget)
         if any(b.get("code") == budget.code and b.get("id") != budget.id for b in budgets):
             return False, "A budget with this code already exists"
 
-        for i, b in enumerate(budgets):
-            if b.get("id") == budget.id:
-                budgets[i] = budget.to_dict()
-                self.data_manager.save_budgets(budgets)
-                return True, "Budget updated successfully"
-
+        result = self.db_manager.save_budget(budget.to_dict())
+        if result:
+            return True, "Budget updated successfully"
         return False, "Budget not found"
 
     def delete_budget(self, budget_id):
         """Delete a budget by ID"""
-        # First check if budget is used in any purchases
-        purchases = self.data_manager.get_purchases()
-        if any(any(b.get("budget_id") == budget_id for b in p.get("budgets", [])) for p in purchases):
-            return False, "Cannot delete budget that is used in purchases"
-
-        budgets = self.data_manager.get_budgets()
-        initial_count = len(budgets)
-        budgets = [b for b in budgets if b.get("id") != budget_id]
-
-        if len(budgets) < initial_count:
-            self.data_manager.save_budgets(budgets)
-            return True, "Budget deleted successfully"
-
-        return False, "Budget not found"
+        return self.db_manager.delete_budget(budget_id)
 
     def get_budget_options(self):
         """Get a list of budget options for dropdowns"""

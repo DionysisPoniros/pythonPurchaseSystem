@@ -4,7 +4,8 @@ import uuid
 
 class Purchase:
     def __init__(self, id=None, order_number="", invoice_number="", date=None,
-                 vendor_id=None, vendor_name="", line_items=None, budgets=None):
+                 vendor_id=None, vendor_name="", line_items=None, budgets=None,
+                 status="Pending", approver="", approval_date=None, notes=""):
         self.id = id or str(uuid.uuid4())
         self.order_number = order_number
         self.invoice_number = invoice_number
@@ -13,6 +14,11 @@ class Purchase:
         self.vendor_name = vendor_name
         self.line_items = line_items or []
         self.budgets = budgets or []
+        # New fields for approval workflow
+        self.status = status  # Pending, Approved, Rejected
+        self.approver = approver
+        self.approval_date = approval_date
+        self.notes = notes
 
     @classmethod
     def from_dict(cls, data):
@@ -25,7 +31,11 @@ class Purchase:
             vendor_id=data.get("vendor_id"),
             vendor_name=data.get("vendor_name", ""),
             line_items=data.get("line_items", []),
-            budgets=data.get("budgets", [])
+            budgets=data.get("budgets", []),
+            status=data.get("status", "Pending"),
+            approver=data.get("approver", ""),
+            approval_date=data.get("approval_date", None),
+            notes=data.get("notes", "")
         )
 
     def to_dict(self):
@@ -38,7 +48,11 @@ class Purchase:
             "vendor_id": self.vendor_id,
             "vendor_name": self.vendor_name,
             "line_items": self.line_items,
-            "budgets": self.budgets
+            "budgets": self.budgets,
+            "status": self.status,
+            "approver": self.approver,
+            "approval_date": self.approval_date,
+            "notes": self.notes
         }
 
     def get_total(self):
@@ -66,3 +80,20 @@ class Purchase:
             return "Partial"
         else:
             return "Pending"
+
+    def get_approval_status(self):
+        """Get the approval status"""
+        return self.status
+
+    def approve(self, approver):
+        """Approve the purchase"""
+        self.status = "Approved"
+        self.approver = approver
+        self.approval_date = datetime.now().strftime("%Y-%m-%d")
+
+    def reject(self, approver, notes=""):
+        """Reject the purchase"""
+        self.status = "Rejected"
+        self.approver = approver
+        self.approval_date = datetime.now().strftime("%Y-%m-%d")
+        self.notes = notes

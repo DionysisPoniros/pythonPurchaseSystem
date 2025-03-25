@@ -266,4 +266,136 @@ class DataManager:
 
                 purchases.append(purchase)
 
+        def import_purchases_from_csv(self, file_path):
+            """Import purchases from a CSV file"""
+            import csv
+            from models.purchase import Purchase
+            import uuid
+            from datetime import datetime
+
+            try:
+                purchases = self.get_purchases()
+                imported_count = 0
+                error_count = 0
+
+                with open(file_path, 'r', newline='') as csvfile:
+                    reader = csv.DictReader(csvfile)
+
+                    for row in reader:
+                        try:
+                            # Validate required fields
+                            if not row.get('Order Number') or not row.get('Vendor') or not row.get('Date'):
+                                error_count += 1
+                                continue
+
+                            # Find vendor ID
+                            vendor_id = None
+                            vendor_name = row.get('Vendor', '').strip()
+
+                            for vendor in self.get_vendors():
+                                if vendor.get('name') == vendor_name:
+                                    vendor_id = vendor.get('id')
+                                    break
+
+                            if not vendor_id:
+                                # Create new vendor if not found
+                                vendor_id = str(uuid.uuid4())
+                                new_vendor = {
+                                    'id': vendor_id,
+                                    'name': vendor_name,
+                                    'contact': '',
+                                    'phone': '',
+                                    'email': '',
+                                    'address': ''
+                                }
+                                vendors = self.get_vendors()
+                                vendors.append(new_vendor)
+                                self.save_vendors(vendors)
+
+                            # Parse date
+                            try:
+                                date_value = row.get('Date', '').strip()
+                                date_obj = datetime.strptime(date_value, "%Y-%m-%d")
+                                date = date_obj.strftime("%Y-%m-%d")
+                            except ValueError:
+                                # Try another common format
+                                try:
+                                    date_obj = datetime.strptime(date_value, "%m/%d/%Y")
+                                    date = date_obj.strftime("%Y-%m-%d")
+                                except ValueError:
+                                    # Use today's date if parsing fails
+                                    date = datetime.now().strftime("%Y-%m-%d")
+
+                            # Create line items
+                            line_items = []
+                            description = row.get('Description', '').strip()
+
+                            if description:
+                                try:
+                                    quantity = int(row.get('Quantity', '1'))
+                                    unit_price = float(row.get('Unit Price', '0.0'))
+                                except ValueError:
+                                    quantity = 1
+                                    unit_price = 0.0
+
+                                line_items.append({
+                                    'description': description,
+                                    'quantity': quantity,
+                                    'unit_price': unit_price,
+                                    'received': False
+                                })
+
+                            # Create budget allocations
+                            budgets = []
+                            budget_code = row.get('Budget Code', '').strip()
+
+                            if budget_code:
+                                budget_id = None
+                                for budget in self.get_budgets():
+                                    if budget.get('code') == budget_code:
+                                        budget_id = budget.get('id')
+                                        break
+
+                                if budget_id:
+                                    try:
+                                        amount = float(row.get('Amount', '0.0'))
+                                    except ValueError:
+                                        amount = 0.0
+
+                                    budgets.append({
+                                        'budget_id': budget_id,
+                                        'amount': amount
+                                    })
+
+                            # Create Purchase object
+                            purchase = {
+                                'id': str(uuid.uuid4()),
+                                'order_number': row.get('Order Number', '').strip(),
+                                'invoice_number': row.get('Invoice Number', '').strip(),
+                                'date': date,
+                                'vendor_id': vendor_id,
+                                'vendor_name': vendor_name,
+                                'line_items': line_items,
+                                'budgets': budgets,
+                                'status': 'Pending',
+                                'approver': '',
+                                'approval_date': None,
+                                'notes': ''
+                            }
+
+                            purchases.append(purchase)
+                            imported_count += 1
+
+                        except Exception as e:
+                            error_count += 1
+                            continue
+
+                # Save imported purchases
+                self.save_purchases(purchases)
+
+                return True, f"Import completed: {imported_count} purchases imported, {error_count} errors"
+
+            except Exception as e:
+                return False, f"Import failed: {str(e)}"
+
         self.save_purchases(purchases)
