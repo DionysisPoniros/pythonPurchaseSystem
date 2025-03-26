@@ -4,6 +4,7 @@ from tkinter import ttk, messagebox, filedialog
 from datetime import datetime
 from models.purchase import Purchase
 from utils.exporters import CSVExporter
+from utils.table_utils import configure_treeview
 
 
 class PurchaseListView:
@@ -25,30 +26,8 @@ class PurchaseListView:
                                 command=self.return_to_dashboard)
         back_button.pack(anchor="nw", padx=10, pady=10)
 
-        # Header frame
-        header_frame = tk.Frame(self.frame)
-        header_frame.pack(fill=tk.X, padx=20, pady=10)
-
-        # Title
-        tk.Label(header_frame, text="Purchase Orders", font=("Arial", 14, "bold")).pack(side=tk.LEFT)
-
-        # Search functionality
-        search_frame = tk.Frame(header_frame)
-        search_frame.pack(side=tk.RIGHT)
-
-        tk.Label(search_frame, text="Search:").pack(side=tk.LEFT)
-        self.search_var = tk.StringVar()
-        search_entry = tk.Entry(search_frame, textvariable=self.search_var, width=20)
-        search_entry.pack(side=tk.LEFT, padx=5)
-
-        search_options = ["Order #", "Vendor", "Date", "Status", "All Fields"]
-        self.search_option_var = tk.StringVar(value=search_options[0])
-        option_menu = ttk.Combobox(search_frame, textvariable=self.search_option_var,
-                                   values=search_options, width=12)
-        option_menu.pack(side=tk.LEFT, padx=5)
-
-        search_button = tk.Button(search_frame, text="Search", command=self.perform_search)
-        search_button.pack(side=tk.LEFT, padx=5)
+        # Use the new search UI
+        self.setup_search_ui()
 
         # Table frame
         table_frame = tk.Frame(self.frame)
@@ -69,6 +48,9 @@ class PurchaseListView:
 
         # Hide ID column
         self.purchase_tree.column("ID", width=0, stretch=tk.NO)
+
+        # Apply styling
+        self.purchase_tree = configure_treeview(self.purchase_tree)
 
         # Add scrollbar
         scrollbar = ttk.Scrollbar(table_frame, orient="vertical", command=self.purchase_tree.yview)
@@ -98,6 +80,51 @@ class PurchaseListView:
 
         tk.Button(action_frame, text="Export to CSV",
                   command=self.export_purchases).pack(side=tk.RIGHT, padx=5)
+
+    def setup_search_ui(self):
+        search_frame = tk.Frame(self.frame, bg="#f5f5f5")
+        search_frame.pack(fill=tk.X, padx=20, pady=10)
+        
+        # Title and search in same row
+        header_frame = tk.Frame(search_frame, bg="#f5f5f5")
+        header_frame.pack(fill=tk.X)
+        
+        tk.Label(header_frame, text="Purchase Orders", 
+               font=("Arial", 14, "bold"), bg="#f5f5f5").pack(side=tk.LEFT)
+        
+        # More prominent search box
+        search_box_frame = tk.Frame(header_frame, bg="#f5f5f5", bd=1, relief=tk.SOLID)
+        search_box_frame.pack(side=tk.RIGHT)
+        
+        # Search icon (Unicode magnifying glass)
+        tk.Label(search_box_frame, text="🔍", bg="#f5f5f5").pack(side=tk.LEFT, padx=5)
+        
+        self.search_var = tk.StringVar()
+        search_entry = tk.Entry(search_box_frame, textvariable=self.search_var, 
+                              width=25, font=("Arial", 10), bd=0)
+        search_entry.pack(side=tk.LEFT, padx=5, pady=5)
+        search_entry.bind("<Return>", lambda e: self.perform_search())
+        
+        search_options = ["Order #", "Vendor", "Date", "Status", "All Fields"]
+        self.search_option_var = tk.StringVar(value=search_options[0])
+        option_menu = ttk.Combobox(search_box_frame, textvariable=self.search_option_var,
+                                 values=search_options, width=12)
+        option_menu.pack(side=tk.LEFT, padx=5)
+        
+        search_button = tk.Button(search_box_frame, text="Search", command=self.perform_search)
+        search_button.pack(side=tk.LEFT, padx=5)
+        
+        # Add filter options below
+        filter_frame = tk.Frame(search_frame, bg="#f5f5f5")
+        filter_frame.pack(fill=tk.X, pady=5)
+        
+        tk.Label(filter_frame, text="Filter by:", bg="#f5f5f5").pack(side=tk.LEFT)
+        
+        # Add filter buttons
+        for status in ["All", "Pending", "Partial", "Received"]:
+            btn = tk.Button(filter_frame, text=status, relief=tk.FLAT, 
+                          padx=10, command=lambda s=status: self.filter_by_status(s))
+            btn.pack(side=tk.LEFT, padx=3)
 
     def treeview_sort_column(self, col):
         """Sort treeview by column"""
@@ -140,10 +167,19 @@ class PurchaseListView:
                 purchases.sort(key=lambda x: x.get_status(), reverse=self.sort_reverse)
 
         # Insert purchase data into treeview
-        for purchase in purchases:
+        for i, purchase in enumerate(purchases):
             total = purchase.get_total()
             status = purchase.get_status()
-
+            
+            row_tag = 'evenrow' if i % 2 == 0 else 'oddrow'
+            # Add status tag
+            if status == "Pending":
+                status_tag = 'pending'
+            elif status == "Partial":
+                status_tag = 'partial'
+            else:
+                status_tag = 'approved'
+                
             self.purchase_tree.insert("", "end", values=(
                 purchase.id,
                 purchase.order_number,
@@ -151,7 +187,46 @@ class PurchaseListView:
                 purchase.date,
                 f"${total:.2f}",
                 status
-            ))
+            ), tags=(row_tag, status_tag))
+
+    def filter_by_status(self, status):
+        """Filter purchases by status"""
+        self.purchase_tree.delete(*self.purchase_tree.get_children())
+        
+        # Get all purchases
+        purchases = self.controllers["purchase"].get_all_purchases()
+        filtered = []
+        
+        if status == "All":
+            filtered = purchases
+        else:
+            for purchase in purchases:
+                purchase_status = purchase.get_status()
+                if status == purchase_status:
+                    filtered.append(purchase)
+        
+        # Display filtered purchases
+        for i, purchase in enumerate(filtered):
+            total = purchase.get_total()
+            status_text = purchase.get_status()
+            
+            row_tag = 'evenrow' if i % 2 == 0 else 'oddrow'
+            # Add status tag
+            if status_text == "Pending":
+                status_tag = 'pending'
+            elif status_text == "Partial":
+                status_tag = 'partial'
+            else:
+                status_tag = 'approved'
+            
+            self.purchase_tree.insert("", "end", values=(
+                purchase.id,
+                purchase.order_number,
+                purchase.vendor_name,
+                purchase.date,
+                f"${total:.2f}",
+                status_text
+            ), tags=(row_tag, status_tag))
 
     def perform_search(self):
         """Search purchases based on criteria"""
@@ -205,9 +280,18 @@ class PurchaseListView:
         # Display filtered results
         self.purchase_tree.delete(*self.purchase_tree.get_children())
 
-        for purchase in filtered_purchases:
+        for i, purchase in enumerate(filtered_purchases):
             total = purchase.get_total()
             status = purchase.get_status()
+            
+            row_tag = 'evenrow' if i % 2 == 0 else 'oddrow'
+            # Add status tag
+            if status == "Pending":
+                status_tag = 'pending'
+            elif status == "Partial":
+                status_tag = 'partial'
+            else:
+                status_tag = 'approved'
 
             self.purchase_tree.insert("", "end", values=(
                 purchase.id,
@@ -216,7 +300,7 @@ class PurchaseListView:
                 purchase.date,
                 f"${total:.2f}",
                 status
-            ))
+            ), tags=(row_tag, status_tag))
 
     def view_purchase_details(self):
         """View details of selected purchase"""
@@ -299,6 +383,9 @@ class PurchaseListView:
         lines_tree.column("Total", width=100)
         lines_tree.column("Received", width=80)
 
+        # Apply styling
+        lines_tree = configure_treeview(lines_tree)
+
         # Add scrollbar
         scrollbar = ttk.Scrollbar(lines_frame, orient="vertical", command=lines_tree.yview)
         lines_tree.configure(yscrollcommand=scrollbar.set)
@@ -310,6 +397,8 @@ class PurchaseListView:
             total = item.get("quantity", 0) * item.get("unit_price", 0)
             received = "Yes" if item.get("received", False) else "No"
 
+            row_tag = 'evenrow' if i % 2 == 0 else 'oddrow'
+            
             lines_tree.insert("", "end", values=(
                 i + 1,
                 item.get("description", ""),
@@ -317,7 +406,7 @@ class PurchaseListView:
                 f"${item.get('unit_price', 0):.2f}",
                 f"${total:.2f}",
                 received
-            ))
+            ), tags=(row_tag,))
 
         # Total
         total_frame = tk.Frame(main_frame)
@@ -411,6 +500,9 @@ class PurchaseListView:
         items_tree.column("Quantity", width=70)
         items_tree.column("Received", width=80)
 
+        # Apply styling
+        items_tree = configure_treeview(items_tree)
+
         # Add scrollbar
         scrollbar = ttk.Scrollbar(items_frame, orient="vertical", command=items_tree.yview)
         items_tree.configure(yscrollcommand=scrollbar.set)
@@ -420,13 +512,15 @@ class PurchaseListView:
         # Insert line items
         for i, item in enumerate(purchase.line_items):
             received = "Yes" if item.get("received", False) else "No"
+            row_tag = 'evenrow' if i % 2 == 0 else 'oddrow'
+            status_tag = 'approved' if item.get("received", False) else 'pending'
 
             items_tree.insert("", "end", values=(
                 i,  # Store index as item ID
                 item.get("description", ""),
                 item.get("quantity", 0),
                 received
-            ))
+            ), tags=(row_tag, status_tag))
 
         # Buttons frame
         button_frame = tk.Frame(main_frame)
@@ -449,7 +543,7 @@ class PurchaseListView:
                     purchase.line_items[idx]["description"],
                     purchase.line_items[idx]["quantity"],
                     "Yes"
-                ))
+                ), tags=('evenrow' if idx % 2 == 0 else 'oddrow', 'approved'))
 
             messagebox.showinfo("Success", "Items marked as received")
 
@@ -473,7 +567,7 @@ class PurchaseListView:
                     purchase.line_items[idx]["description"],
                     purchase.line_items[idx]["quantity"],
                     "No"
-                ))
+                ), tags=('evenrow' if idx % 2 == 0 else 'oddrow', 'pending'))
 
             messagebox.showinfo("Success", "Items marked as not received")
 
@@ -485,14 +579,14 @@ class PurchaseListView:
             self.controllers["purchase"].receive_items(purchase.id, indices, True)
 
             # Update display
-            for item in items_tree.get_children():
+            for i, item in enumerate(items_tree.get_children()):
                 idx = int(items_tree.item(item, "values")[0])
                 items_tree.item(item, values=(
                     idx,
                     purchase.line_items[idx]["description"],
                     purchase.line_items[idx]["quantity"],
                     "Yes"
-                ))
+                ), tags=('evenrow' if idx % 2 == 0 else 'oddrow', 'approved'))
 
             messagebox.showinfo("Success", "All items marked as received")
 
@@ -559,6 +653,10 @@ class PurchaseFormView:
                                 command=self.return_to_purchase_list)
         back_button.pack(anchor="nw", padx=10, pady=10)
 
+        # Define form styling variables
+        form_padding = {'padx': 15, 'pady': 8}
+        label_style = {'font': ('Arial', 10), 'anchor': 'w'}
+
         # Create scrollable canvas
         canvas = tk.Canvas(self.frame)
         scrollbar = ttk.Scrollbar(self.frame, orient="vertical", command=canvas.yview)
@@ -578,31 +676,34 @@ class PurchaseFormView:
         tk.Label(form_frame, text=title, font=("Arial", 14, "bold")).grid(
             row=0, column=0, columnspan=3, sticky="w", pady=10)
 
-        # Purchase info section
-        info_frame = tk.LabelFrame(form_frame, text="Purchase Information")
-        info_frame.grid(row=1, column=0, columnspan=3, sticky="ew", padx=10, pady=10)
+        # Purchase info section with better visual hierarchy
+        info_frame = tk.LabelFrame(form_frame, text="Purchase Information", 
+                                 font=('Arial', 11, 'bold'), padx=15, pady=10)
+        info_frame.grid(row=1, column=0, columnspan=3, sticky="ew", 
+                      padx=10, pady=15)
 
         # Order number
-        tk.Label(info_frame, text="Order Number:").grid(row=0, column=0, sticky="w", padx=5, pady=5)
+        tk.Label(info_frame, text="Order Number:", **label_style).grid(
+            row=0, column=0, sticky="w", **form_padding)
         self.order_number_var = tk.StringVar(value=self.purchase.order_number if self.is_edit else "")
         order_entry = tk.Entry(info_frame, textvariable=self.order_number_var, width=20)
-        order_entry.grid(row=0, column=1, sticky="w", padx=5, pady=5)
+        order_entry.grid(row=0, column=1, sticky="w", **form_padding)
 
         # Invoice number
-        tk.Label(info_frame, text="Invoice Number:").grid(row=0, column=2, sticky="w", padx=5, pady=5)
+        tk.Label(info_frame, text="Invoice Number:", **label_style).grid(row=0, column=2, sticky="w", **form_padding)
         self.invoice_number_var = tk.StringVar(value=self.purchase.invoice_number if self.is_edit else "")
         invoice_entry = tk.Entry(info_frame, textvariable=self.invoice_number_var, width=20)
-        invoice_entry.grid(row=0, column=3, sticky="w", padx=5, pady=5)
+        invoice_entry.grid(row=0, column=3, sticky="w", **form_padding)
 
         # Date
-        tk.Label(info_frame, text="Date:").grid(row=1, column=0, sticky="w", padx=5, pady=5)
+        tk.Label(info_frame, text="Date:", **label_style).grid(row=1, column=0, sticky="w", **form_padding)
         self.date_var = tk.StringVar(
             value=self.purchase.date if self.is_edit else datetime.now().strftime("%Y-%m-%d"))
         date_entry = tk.Entry(info_frame, textvariable=self.date_var, width=20)
-        date_entry.grid(row=1, column=1, sticky="w", padx=5, pady=5)
+        date_entry.grid(row=1, column=1, sticky="w", **form_padding)
 
         # Vendor
-        tk.Label(info_frame, text="Vendor:").grid(row=1, column=2, sticky="w", padx=5, pady=5)
+        tk.Label(info_frame, text="Vendor:", **label_style).grid(row=1, column=2, sticky="w", **form_padding)
 
         vendor_names = self.controllers["vendor"].get_vendor_names()
         self.vendor_var = tk.StringVar()
@@ -613,7 +714,7 @@ class PurchaseFormView:
             self.vendor_var.set(vendor_names[0])
 
         vendor_dropdown = ttk.Combobox(info_frame, textvariable=self.vendor_var, values=vendor_names, width=20)
-        vendor_dropdown.grid(row=1, column=3, sticky="w", padx=5, pady=5)
+        vendor_dropdown.grid(row=1, column=3, sticky="w", **form_padding)
 
         if not vendor_names:
             vendor_dropdown["state"] = "disabled"
@@ -625,8 +726,8 @@ class PurchaseFormView:
             row=2, column=0, columnspan=2, sticky="w", padx=5, pady=5)
 
         # Line items section
-        items_frame = tk.LabelFrame(form_frame, text="Line Items")
-        items_frame.grid(row=2, column=0, columnspan=3, sticky="ew", padx=10, pady=10)
+        items_frame = tk.LabelFrame(form_frame, text="Line Items", font=('Arial', 11, 'bold'), padx=15, pady=10)
+        items_frame.grid(row=2, column=0, columnspan=3, sticky="ew", padx=10, pady=15)
 
         # Line items container (for dynamically adding items)
         self.lines_container = tk.Frame(items_frame)
@@ -648,8 +749,8 @@ class PurchaseFormView:
         add_item_btn.pack(anchor="w", padx=5, pady=5)
 
         # Budget allocation section
-        budget_frame = tk.LabelFrame(form_frame, text="Budget Allocation")
-        budget_frame.grid(row=3, column=0, columnspan=3, sticky="ew", padx=10, pady=10)
+        budget_frame = tk.LabelFrame(form_frame, text="Budget Allocation", font=('Arial', 11, 'bold'), padx=15, pady=10)
+        budget_frame.grid(row=3, column=0, columnspan=3, sticky="ew", padx=10, pady=15)
 
         self.budget_container = tk.Frame(budget_frame)
         self.budget_container.pack(fill=tk.X, padx=5, pady=5)
@@ -729,21 +830,21 @@ class PurchaseFormView:
 
     def add_line_item_row(self, item=None):
         """Add a new line item row"""
-        row_frame = tk.Frame(self.lines_container)
+        row_frame = tk.Frame(self.lines_container, padx=5, pady=5, bd=1, relief=tk.GROOVE)
         row_frame.pack(fill=tk.X, pady=5)
 
         # Line item fields
-        tk.Label(row_frame, text="Description:").grid(row=0, column=0, sticky="w")
+        tk.Label(row_frame, text="Description:", font=('Arial', 10)).grid(row=0, column=0, sticky="w", padx=5)
         description_var = tk.StringVar(value=item.get("description", "") if item else "")
         description_entry = tk.Entry(row_frame, textvariable=description_var, width=30)
         description_entry.grid(row=0, column=1, sticky="w", padx=5)
 
-        tk.Label(row_frame, text="Quantity:").grid(row=0, column=2, sticky="w")
+        tk.Label(row_frame, text="Quantity:", font=('Arial', 10)).grid(row=0, column=2, sticky="w", padx=5)
         quantity_var = tk.StringVar(value=str(item.get("quantity", 1)) if item else "1")
         quantity_entry = tk.Entry(row_frame, textvariable=quantity_var, width=8)
         quantity_entry.grid(row=0, column=3, sticky="w", padx=5)
 
-        tk.Label(row_frame, text="Unit Price:").grid(row=0, column=4, sticky="w")
+        tk.Label(row_frame, text="Unit Price:", font=('Arial', 10)).grid(row=0, column=4, sticky="w", padx=5)
         price_var = tk.StringVar(value=str(item.get("unit_price", 0.0)) if item else "0.00")
         price_entry = tk.Entry(row_frame, textvariable=price_var, width=10)
         price_entry.grid(row=0, column=5, sticky="w", padx=5)
@@ -758,7 +859,7 @@ class PurchaseFormView:
             except ValueError:
                 total_var.set("$0.00")
 
-        tk.Label(row_frame, text="Total:").grid(row=0, column=6, sticky="w")
+        tk.Label(row_frame, text="Total:", font=('Arial', 10)).grid(row=0, column=6, sticky="w", padx=5)
         total_var = tk.StringVar(
             value=f"${item.get('quantity', 1) * item.get('unit_price', 0.0):.2f}" if item else "$0.00")
         total_label = tk.Label(row_frame, textvariable=total_var)
@@ -778,7 +879,7 @@ class PurchaseFormView:
             row_frame.destroy()
             self.line_items.remove(item_dict)
 
-        remove_btn = tk.Button(row_frame, text="✖", command=remove_row)
+        remove_btn = tk.Button(row_frame, text="✖", command=remove_row, bd=0, fg="red", font=("Arial", 10, "bold"))
         remove_btn.grid(row=0, column=9, sticky="w", padx=5)
 
         # Store references to variables
@@ -799,7 +900,7 @@ class PurchaseFormView:
         if not self.budget_options:
             return None
 
-        row_frame = tk.Frame(self.budget_container)
+        row_frame = tk.Frame(self.budget_container, padx=5, pady=5, bd=1, relief=tk.GROOVE)
         row_frame.pack(fill=tk.X, pady=5)
 
         # Budget selection
@@ -827,7 +928,7 @@ class PurchaseFormView:
         budget_id_var.trace_add("write", update_budget_name)
 
         # Budget dropdown
-        tk.Label(row_frame, text="Budget:").grid(row=0, column=0, sticky="w")
+        tk.Label(row_frame, text="Budget:", font=('Arial', 10)).grid(row=0, column=0, sticky="w", padx=5)
         budget_menu = ttk.Combobox(row_frame, textvariable=budget_name_var, width=25)
         budget_menu["values"] = [name for _, name in self.budget_options]
         budget_menu.grid(row=0, column=1, sticky="w", padx=5)
@@ -842,7 +943,7 @@ class PurchaseFormView:
         budget_menu.bind("<<ComboboxSelected>>", on_budget_select)
 
         # Amount
-        tk.Label(row_frame, text="Amount:").grid(row=0, column=2, sticky="w")
+        tk.Label(row_frame, text="Amount:", font=('Arial', 10)).grid(row=0, column=2, sticky="w", padx=5)
         amount_var = tk.StringVar(value=str(amount))
         amount_entry = tk.Entry(row_frame, textvariable=amount_var, width=15)
         amount_entry.grid(row=0, column=3, sticky="w", padx=5)
@@ -852,7 +953,7 @@ class PurchaseFormView:
             row_frame.destroy()
             self.budget_allocations.remove(budget_dict)
 
-        remove_btn = tk.Button(row_frame, text="✖", command=remove_row)
+        remove_btn = tk.Button(row_frame, text="✖", command=remove_row, bd=0, fg="red", font=("Arial", 10, "bold"))
         remove_btn.grid(row=0, column=4, sticky="w", padx=5)
 
         # Store references

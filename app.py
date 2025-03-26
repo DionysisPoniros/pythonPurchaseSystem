@@ -1,3 +1,4 @@
+from tkinter import ttk
 import tkinter as tk
 from tkinter import messagebox
 from database.db_manager import DatabaseManager
@@ -10,13 +11,14 @@ from views.main_dashboard import MainDashboard
 import os
 
 
+
 class PurchaseApp:
     def __init__(self, root):
         self.root = root
         self.root.title("Purchase Management System")
         self.root.geometry("900x700")
         self.root.minsize(900, 700)
-
+        
         # Initialize database manager
         self.db_manager = DatabaseManager()
 
@@ -49,6 +51,28 @@ class PurchaseApp:
 
         # Default view
         self.show_view(self.dashboard)
+    def setup_styles(self):
+        # Create custom styles
+        style = ttk.Style()
+        
+        # Configure a modern theme
+        style.theme_use('clam')  # Or 'alt' depending on platform
+        
+        # Custom button style
+        style.configure('TButton', 
+                        font=('Arial', 10),
+                        padding=6, 
+                        relief="flat",
+                        background="#4e79a7")
+        
+        # Custom treeview style
+        style.configure("Treeview", 
+                        background="#f5f5f5",
+                        fieldbackground="#f5f5f5", 
+                        rowheight=25)
+        
+        style.configure("Treeview.Heading", 
+                        font=('Arial', 10, 'bold'))
 
     def setup_menu(self):
         """Set up the application menu"""
@@ -214,6 +238,7 @@ class PurchaseApp:
                 self.show_view(self.dashboard)
             else:
                 messagebox.showerror("Restore Failed", message)
+
 
 
 def main():

@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox, filedialog
 from datetime import datetime
 from utils.chart_utils import ChartGenerator
-
+from utils.table_utils import configure_treeview
 
 class BudgetReportView:
     def __init__(self, parent, controllers, show_view_callback):
@@ -95,7 +95,8 @@ class BudgetReportView:
         # Create treeview for budget summary
         columns = ("Budget", "Amount", "Spent", "Remaining", "Percent Used")
         summary_tree = ttk.Treeview(summary_frame, columns=columns, show="headings")
-
+        summary_tree = configure_treeview(summary_tree)
+        
         # Set column headings
         for col in columns:
             summary_tree.heading(col, text=col)
@@ -113,17 +114,17 @@ class BudgetReportView:
         total_budget = 0
         total_spent = 0
 
-        for data in budget_data:
+        for i, data in enumerate(budget_data):
+            row_tag = 'evenrow' if i % 2 == 0 else 'oddrow'
+            status_tag = 'approved' if data['percent'] < 75 else 'partial' if data['percent'] < 90 else 'pending'
+            
             summary_tree.insert("", "end", values=(
                 data["name"],
                 f"${data['amount']:,.2f}",
                 f"${data['spent']:,.2f}",
                 f"${data['remaining']:,.2f}",
                 f"{data['percent']:.1f}%"
-            ))
-
-            total_budget += data["amount"]
-            total_spent += data["spent"]
+            ), tags=(row_tag, status_tag))
 
         # Add total row
         total_remaining = total_budget - total_spent
@@ -364,6 +365,7 @@ class VendorReportView:
         # Create treeview for vendor spending
         columns = ("Vendor", "Total Spent", "Number of Orders", "Avg Order Value")
         spending_tree = ttk.Treeview(spending_frame, columns=columns, show="headings")
+        spending_tree = configure_treeview(spending_tree)
 
         # Set column headings
         for col in columns:
@@ -378,14 +380,15 @@ class VendorReportView:
         scrollbar.pack(side="right", fill="y")
         spending_tree.pack(fill="both", expand=True)
 
-        # Insert vendor data
-        for data in vendor_data:
+        for i, data in enumerate(vendor_data):
+            row_tag = 'evenrow' if i % 2 == 0 else 'oddrow'
+            
             spending_tree.insert("", "end", values=(
                 data["name"],
                 f"${data['total_spent']:,.2f}",
                 data["purchase_count"],
                 f"${data['avg_order']:,.2f}"
-            ))
+            ), tags=(row_tag,))
 
         # Create pie chart of vendor spending
         if vendor_data:
@@ -440,7 +443,7 @@ class VendorReportView:
             # Create treeview for vendor performance
             columns = ("Vendor", "Average Order Size", "Total Orders", "Total Spend")
             performance_tree = ttk.Treeview(performance_frame, columns=columns, show="headings")
-
+            performance_tree = configure_treeview(performance_tree)
             # Set column headings
             for col in columns:
                 performance_tree.heading(col, text=col)
@@ -455,13 +458,15 @@ class VendorReportView:
             performance_tree.pack(fill="both", expand=True)
 
             # Insert vendor data
-            for data in vendor_data_sorted:
+            for i, data in enumerate(vendor_data_sorted):
+                row_tag = 'evenrow' if i % 2 == 0 else 'oddrow'
+                
                 performance_tree.insert("", "end", values=(
                     data["name"],
                     f"${data['avg_order']:,.2f}",
                     data["purchase_count"],
                     f"${data['total_spent']:,.2f}"
-                ))
+                ), tags=(row_tag,))
         else:
             tk.Label(self.performance_tab, text="No vendor data available for selected year").pack(pady=20)
 

@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 from datetime import datetime
 from models.budget import Budget
-
+from utils.table_utils import configure_treeview
 
 class BudgetListView:
     def __init__(self, parent, controllers, show_view_callback):
@@ -45,7 +45,7 @@ class BudgetListView:
         # Create treeview for budgets
         columns = ("ID", "Code", "Name", "Amount", "Spent", "Remaining", "Percent")
         self.budget_tree = ttk.Treeview(table_frame, columns=columns, show="headings")
-
+        self.budget_tree = configure_treeview(self.budget_tree)
         # Set column headings
         for col in columns:
             self.budget_tree.heading(col, text=col)
@@ -93,7 +93,18 @@ class BudgetListView:
         budget_data = self.controllers["budget"].calculate_budget_usage(selected_year)
 
         # Insert budget data
-        for data in budget_data:
+        for i, data in enumerate(budget_data):
+            # Add row tags for styling
+            row_tag = 'evenrow' if i % 2 == 0 else 'oddrow'
+            
+            # Add status tag based on percentage
+            if data['percent'] > 90:
+                status_tag = 'pending'  # Red for near limit
+            elif data['percent'] > 75:
+                status_tag = 'partial'  # Yellow for warning
+            else:
+                status_tag = 'approved'  # Green for good
+            
             self.budget_tree.insert("", "end", values=(
                 data["id"],
                 data["code"],
@@ -102,7 +113,7 @@ class BudgetListView:
                 f"${data['spent']:,.2f}",
                 f"${data['remaining']:,.2f}",
                 f"{data['percent']:.1f}%"
-            ))
+            ), tags=(row_tag, status_tag))
 
     def add_budget(self):
         """Open dialog to add a new budget"""

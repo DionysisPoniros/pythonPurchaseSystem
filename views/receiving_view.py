@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox, filedialog
 from datetime import datetime
 from utils.chart_utils import ChartGenerator
+from utils.table_utils import configure_treeview
 
 class ReceivingDashboardView:
     def __init__(self, parent, controllers, show_view_callback):
@@ -61,6 +62,7 @@ class ReceivingDashboardView:
         # Create treeview for pending items
         columns = ("ID", "Order #", "Vendor", "Date", "Items", "Days Outstanding")
         pending_tree = ttk.Treeview(pending_frame, columns=columns, show="headings")
+        pending_tree = configure_treeview(pending_tree)
 
         # Set column headings
         for col in columns:
@@ -83,7 +85,8 @@ class ReceivingDashboardView:
         # Insert pending items
         today = datetime.now().date()
 
-        for purchase in purchases:
+        
+        for i, purchase in enumerate(purchases):
             # Skip if all items received
             if purchase.is_received():
                 continue
@@ -104,6 +107,12 @@ class ReceivingDashboardView:
             if len(pending_text) > 50:
                 pending_text = pending_text[:47] + "..."
 
+            # Add row tags
+            row_tag = 'evenrow' if i % 2 == 0 else 'oddrow'
+            
+            # Status based on days outstanding
+            status_tag = 'pending' if days_outstanding > 14 else 'partial'
+            
             pending_tree.insert("", "end", values=(
                 purchase.id,
                 purchase.order_number,
@@ -111,7 +120,7 @@ class ReceivingDashboardView:
                 purchase.date,
                 pending_text,
                 days_outstanding
-            ))
+            ), tags=(row_tag, status_tag))
 
         # Button to receive items
         def receive_selected():

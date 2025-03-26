@@ -2,13 +2,14 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 from datetime import datetime
-
+from utils.table_utils import configure_treeview
 
 class ApprovalDashboardView:
     def __init__(self, parent, controllers, show_view_callback):
         self.parent = parent
         self.controllers = controllers
         self.show_view = show_view_callback
+        
 
         # For simplicity, we'll use a hardcoded approver name
         # In a real system, this would come from user authentication
@@ -58,7 +59,7 @@ class ApprovalDashboardView:
         # Create treeview for pending approvals
         columns = ("ID", "Order #", "Vendor", "Date", "Total", "Submitter")
         self.pending_tree = ttk.Treeview(pending_frame, columns=columns, show="headings")
-
+        self.pending_tree = configure_treeview(self.pending_tree)
         # Set column headings
         for col in columns:
             self.pending_tree.heading(col, text=col)
@@ -101,7 +102,10 @@ class ApprovalDashboardView:
         # Get pending purchases
         pending_purchases = self.controllers["purchase"].get_purchases_by_approval_status("Pending")
 
-        for purchase in pending_purchases:
+        for i, purchase in enumerate(pending_purchases):
+            # Add row tags for styling
+            row_tag = 'evenrow' if i % 2 == 0 else 'oddrow'
+            
             self.pending_tree.insert("", "end", values=(
                 purchase.id,
                 purchase.order_number,
@@ -109,8 +113,8 @@ class ApprovalDashboardView:
                 purchase.date,
                 f"${purchase.get_total():.2f}",
                 "User"  # In a real system, this would be the submitter's name
-            ))
-
+            ), tags=(row_tag, 'pending'))
+            
     def view_purchase_details(self):
         """View details of selected purchase"""
         selected_item = self.pending_tree.selection()
@@ -181,6 +185,7 @@ class ApprovalDashboardView:
         # Create treeview for line items
         columns = ("Item", "Description", "Quantity", "Unit Price", "Total", "Received")
         lines_tree = ttk.Treeview(lines_frame, columns=columns, show="headings")
+        lines_tree = configure_treeview(lines_tree)
 
         # Set column headings
         for col in columns:

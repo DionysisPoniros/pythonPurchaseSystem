@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 from models.vendor import Vendor
-
+from utils.table_utils import configure_treeview
 
 class VendorListView:
     def __init__(self, parent, controllers, show_view_callback):
@@ -29,7 +29,7 @@ class VendorListView:
         # Create treeview for vendors
         columns = ("ID", "Name", "Contact", "Phone", "Email")
         self.vendor_tree = ttk.Treeview(table_frame, columns=columns, show="headings")
-
+        self.vendor_tree = configure_treeview(self.vendor_tree)
         # Set column headings
         for col in columns:
             self.vendor_tree.heading(col, text=col)
@@ -66,14 +66,16 @@ class VendorListView:
         self.vendor_tree.delete(*self.vendor_tree.get_children())
 
         vendors = self.controllers["vendor"].get_all_vendors()
-        for vendor in vendors:
+        for i, vendor in enumerate(vendors):
+            row_tag = 'evenrow' if i % 2 == 0 else 'oddrow'
+            
             self.vendor_tree.insert("", "end", values=(
                 vendor.id,
                 vendor.name,
                 vendor.contact,
                 vendor.phone,
                 vendor.email
-            ))
+            ), tags=(row_tag,))
 
     def add_vendor(self):
         """Open dialog to add a new vendor"""

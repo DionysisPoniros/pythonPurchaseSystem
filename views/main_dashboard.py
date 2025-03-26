@@ -56,24 +56,48 @@ class MainDashboard:
 
 
     def create_stats_cards(self, parent):
-        # Create stats cards for key metrics
-        self.pending_orders_card = StatsCard(
-            parent, "Pending Orders",
-            self.controllers["purchase"].count_pending_orders(),
-            UI_COLORS["pending_card"]
-        )
-
-        self.total_orders_card = StatsCard(
-            parent, "Total Orders (YTD)",
-            len(self.controllers["purchase"].get_current_year_purchases()),
-            UI_COLORS["orders_card"]
-        )
-
-        self.total_spending_card = StatsCard(
-            parent, "Total Spending (YTD)",
-            f"${self.controllers['purchase'].calculate_ytd_spending():,.2f}",
-            UI_COLORS["spending_card"]
-        )
+        # Create a frame for cards with shadow effect
+        cards_frame = tk.Frame(parent, bg="#f0f0f0", padx=10, pady=10)
+        cards_frame.pack(fill=tk.BOTH, expand=True)
+        
+        # Updated colors for better contrast and visibility
+        card_colors = {
+            "pending": "#ff7e7a",
+            "orders": "#7aa7de",
+            "spending": "#7ade94"
+        }
+        
+        # Add card titles and icons
+        card_data = [
+            {
+                "title": "Pending Orders",
+                "value": self.controllers["purchase"].count_pending_orders(),
+                "color": card_colors["pending"],
+                "icon": "📋"  # Use Unicode icons if custom icons unavailable
+            },
+            {
+                "title": "Total Orders (YTD)",
+                "value": len(self.controllers["purchase"].get_current_year_purchases()),
+                "color": card_colors["orders"],
+                "icon": "📦"
+            },
+            {
+                "title": "Total Spending (YTD)",
+                "value": f"${self.controllers['purchase'].calculate_ytd_spending():,.2f}",
+                "color": card_colors["spending"],
+                "icon": "💰"
+            }
+        ]
+    
+        # Create the cards with the updated StatsCard class
+        self.stat_cards = []
+        for data in card_data:
+            card = StatsCard(cards_frame, 
+                            data["title"], 
+                            data["value"], 
+                            data["color"],
+                            data["icon"])
+            self.stat_cards.append(card)
 
     def create_action_buttons(self, parent):
         actions_card = tk.LabelFrame(parent, text="Actions", font=("Arial", 12, "bold"))
@@ -152,12 +176,37 @@ class MainDashboard:
 
     def refresh_dashboard(self):
         """Refresh dashboard data"""
-        # Update stats cards
-        self.pending_orders_card.update_value(self.controllers["purchase"].count_pending_orders())
-        self.total_orders_card.update_value(len(self.controllers["purchase"].get_current_year_purchases()))
-        self.total_spending_card.update_value(
+        # Get current values
+        card_values = [
+            self.controllers["purchase"].count_pending_orders(),
+            len(self.controllers["purchase"].get_current_year_purchases()),
             f"${self.controllers['purchase'].calculate_ytd_spending():,.2f}"
-        )
+        ]
+        
+        # Update each card with its new value if stat_cards exist
+        if hasattr(self, 'stat_cards') and self.stat_cards:
+            for i, value in enumerate(card_values):
+                if i < len(self.stat_cards):
+                    self.stat_cards[i].update_value(value)
+        else:
+            # Find the left frame where the cards are located
+            # Look first in the frame attribute
+            container_frame = None
+            if hasattr(self, 'frame'):
+                # Try to find the dashboard_frame or equivalent
+                for widget in self.frame.winfo_children():
+                    if isinstance(widget, tk.Frame):
+                        # This is likely the dashboard_frame
+                        container_frame = widget
+                        break
+                        
+            if container_frame:
+                # Look for the left panel
+                for widget in container_frame.winfo_children():
+                    if isinstance(widget, tk.Frame):
+                        # First frame is likely the left panel
+                        self.create_stats_cards(widget)
+                        break
 
         # Recreate charts and activity
         # (In a more advanced implementation, we would update these without rebuilding)

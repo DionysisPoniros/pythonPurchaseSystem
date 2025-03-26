@@ -18,3 +18,17 @@
 2025-03-25 19:23:01,334 - database_manager - INFO - Database initialized at purchase_system.db
 2025-03-25 19:23:43,200 - database_manager - INFO - Database initialized at purchase_system.db
 2025-03-25 19:27:07,244 - database_manager - INFO - Database initialized at purchase_system.db
+2025-03-25 19:45:15,327 - database_manager - INFO - Database initialized at purchase_system.db
+2025-03-25 19:45:42,901 - database_manager - INFO - Database backup created at backups\purchase_system_20250325_194542.db
+2025-03-25 19:46:05,808 - database_manager - INFO - Database restored from backup: G:/My Drive/SPRING2025 GDrive/MGIS350/purchase_system/backups/purchase_system_20250325_192234.db
+2025-03-25 19:46:12,432 - database_manager - INFO - Database initialized at purchase_system.db
+2025-03-25 19:48:45,337 - matplotlib.category - INFO - Using categorical units to plot a list of strings that are all parsable as floats or dates. If these strings should be plotted as numbers, cast to the appropriate data type before plotting.
+2025-03-25 19:48:45,338 - matplotlib.category - INFO - Using categorical units to plot a list of strings that are all parsable as floats or dates. If these strings should be plotted as numbers, cast to the appropriate data type before plotting.
+2025-03-26 11:07:01,745 - database_manager - INFO - Database initialized at purchase_system.db
+2025-03-26 11:34:13,319 - database_manager - INFO - Database initialized at purchase_system.db
+2025-03-26 12:04:30,025 - database_manager - INFO - Database initialized at purchase_system.db
+2025-03-26 12:04:47,673 - database_manager - INFO - Database initialized at purchase_system.db
+2025-03-26 12:07:08,157 - database_manager - INFO - Database initialized at purchase_system.db
+2025-03-26 12:08:38,523 - database_manager - INFO - Database initialized at purchase_system.db
+2025-03-26 12:09:33,816 - matplotlib.category - INFO - Using categorical units to plot a list of strings that are all parsable as floats or dates. If these strings should be plotted as numbers, cast to the appropriate data type before plotting.
+2025-03-26 12:09:33,817 - matplotlib.category - INFO - Using categorical units to plot a list of strings that are all parsable as floats or dates. If these strings should be plotted as numbers, cast to the appropriate data type before plotting.
