@@ -3,6 +3,7 @@ from tkinter import ttk, messagebox, filedialog
 from datetime import datetime
 from utils.chart_utils import ChartGenerator
 from utils.table_utils import configure_treeview
+from views.view_factory import ViewFactory
 
 class BudgetReportView:
     def __init__(self, parent, controllers, show_view_callback):

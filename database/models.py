@@ -1,4 +1,4 @@
-# database/models.py
+# database/models.py - Complete file with updated relationships
 import uuid
 from datetime import datetime
 from sqlalchemy import Column, String, Float, Integer, Boolean, ForeignKey, Table, Text, create_engine
@@ -6,17 +6,6 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 
 Base = declarative_base()
-
-# Association table for purchase-budget many-to-many relationship
-purchase_budget_association = Table(
-    'purchase_budget_association',
-    Base.metadata,
-    Column('id', String, primary_key=True),
-    Column('purchase_id', String, ForeignKey('purchases.id')),
-    Column('budget_id', String, ForeignKey('budgets.id')),
-    Column('amount', Float)
-)
-
 
 class Vendor(Base):
     __tablename__ = 'vendors'
@@ -28,8 +17,8 @@ class Vendor(Base):
     email = Column(String)
     address = Column(String)
 
-    # Relationships
-    purchases = relationship("Purchase", back_populates="vendor")
+    # Define relationship with backref
+    purchases = relationship("Purchase", back_populates="vendor", cascade="all, delete-orphan")
 
     def __init__(self, id=None, name="", contact="", phone="", email="", address=""):
         self.id = id or str(uuid.uuid4())
@@ -49,17 +38,6 @@ class Vendor(Base):
             "address": self.address
         }
 
-    @classmethod
-    def from_dict(cls, data):
-        return cls(
-            id=data.get("id"),
-            name=data.get("name", ""),
-            contact=data.get("contact", ""),
-            phone=data.get("phone", ""),
-            email=data.get("email", ""),
-            address=data.get("address", "")
-        )
-
 
 class Budget(Base):
     __tablename__ = 'budgets'
@@ -69,9 +47,9 @@ class Budget(Base):
     name = Column(String, nullable=False)
     description = Column(String)
 
-    # Relationships
+    # Define relationships with backrefs
     yearly_amounts = relationship("YearlyBudgetAmount", back_populates="budget", cascade="all, delete-orphan")
-    purchases = relationship("PurchaseBudget", back_populates="budget")
+    purchases = relationship("PurchaseBudget", back_populates="budget", cascade="all, delete-orphan")
 
     def __init__(self, id=None, code="", name="", description=""):
         self.id = id or str(uuid.uuid4())
@@ -92,16 +70,6 @@ class Budget(Base):
             "yearly_amount": yearly_amount
         }
 
-    @classmethod
-    def from_dict(cls, data):
-        budget = cls(
-            id=data.get("id"),
-            code=data.get("code", ""),
-            name=data.get("name", ""),
-            description=data.get("description", "")
-        )
-        return budget
-
     def get_amount_for_year(self, year=None):
         year = year or str(datetime.now().year)
         for yearly_amount in self.yearly_amounts:
@@ -114,11 +82,11 @@ class YearlyBudgetAmount(Base):
     __tablename__ = 'yearly_budget_amounts'
 
     id = Column(String, primary_key=True)
-    budget_id = Column(String, ForeignKey('budgets.id'))
+    budget_id = Column(String, ForeignKey('budgets.id', ondelete='CASCADE'))
     year = Column(String, nullable=False)
     amount = Column(Float, default=0.0)
 
-    # Relationships
+    # Define relationship with backref
     budget = relationship("Budget", back_populates="yearly_amounts")
 
     def __init__(self, id=None, budget_id=None, year=None, amount=0.0):
@@ -132,13 +100,13 @@ class LineItem(Base):
     __tablename__ = 'line_items'
 
     id = Column(String, primary_key=True)
-    purchase_id = Column(String, ForeignKey('purchases.id'))
+    purchase_id = Column(String, ForeignKey('purchases.id', ondelete='CASCADE'))
     description = Column(String)
     quantity = Column(Integer, default=1)
     unit_price = Column(Float, default=0.0)
     received = Column(Boolean, default=False)
 
-    # Relationships
+    # Define relationship with backref
     purchase = relationship("Purchase", back_populates="line_items")
 
     def __init__(self, id=None, purchase_id=None, description="", quantity=1, unit_price=0.0, received=False):
@@ -165,11 +133,11 @@ class PurchaseBudget(Base):
     __tablename__ = 'purchase_budgets'
 
     id = Column(String, primary_key=True)
-    purchase_id = Column(String, ForeignKey('purchases.id'))
-    budget_id = Column(String, ForeignKey('budgets.id'))
+    purchase_id = Column(String, ForeignKey('purchases.id', ondelete='CASCADE'))
+    budget_id = Column(String, ForeignKey('budgets.id', ondelete='CASCADE'))
     amount = Column(Float, default=0.0)
 
-    # Relationships
+    # Define relationships with backrefs
     purchase = relationship("Purchase", back_populates="budgets")
     budget = relationship("Budget", back_populates="purchases")
 
@@ -200,7 +168,7 @@ class Purchase(Base):
     approval_date = Column(String)
     notes = Column(Text)
 
-    # Relationships
+    # Define relationships with backrefs
     vendor = relationship("Vendor", back_populates="purchases")
     line_items = relationship("LineItem", back_populates="purchase", cascade="all, delete-orphan")
     budgets = relationship("PurchaseBudget", back_populates="purchase", cascade="all, delete-orphan")

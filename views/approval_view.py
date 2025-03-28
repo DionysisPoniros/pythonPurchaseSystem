@@ -3,6 +3,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 from datetime import datetime
 from utils.table_utils import configure_treeview
+from views.view_factory import ViewFactory
 
 class ApprovalDashboardView:
     def __init__(self, parent, controllers, show_view_callback):

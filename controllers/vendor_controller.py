@@ -1,5 +1,7 @@
 # controllers/vendor_controller.py
-from models.vendor import Vendor
+from database.models import Vendor, Purchase
+from sqlalchemy.orm import joinedload
+import uuid
 
 class VendorController:
     def __init__(self, db_manager):
@@ -7,61 +9,117 @@ class VendorController:
 
     def get_all_vendors(self):
         """Get all vendors as Vendor objects"""
-        vendors_data = self.db_manager.get_vendors()
-        return [Vendor.from_dict(v) for v in vendors_data]
+        session = self.db_manager.Session()
+        try:
+            return session.query(Vendor).all()
+        finally:
+            session.close()
 
     def get_vendor_by_id(self, vendor_id):
         """Get a vendor by ID"""
-        vendors = self.db_manager.get_vendors()
-        vendor_data = next((v for v in vendors if v.get("id") == vendor_id), None)
-        if vendor_data:
-            return Vendor.from_dict(vendor_data)
-        return None
+        session = self.db_manager.Session()
+        try:
+            return session.query(Vendor).filter(Vendor.id == vendor_id).first()
+        finally:
+            session.close()
 
-    def add_vendor(self, vendor):
-        """Add a new vendor"""
-        vendors = self.db_manager.get_vendors()
-
-        # Check if vendor name already exists
-        if any(v.get("name") == vendor.name for v in vendors):
-            return False, "A vendor with this name already exists"
-
-        result = self.db_manager.save_vendor(vendor.to_dict())
-        if result:
+    def add_vendor(self, vendor_data):
+        """Add a new vendor using SQLAlchemy models"""
+        session = self.db_manager.Session()
+        try:
+            # Check if vendor name already exists
+            existing = session.query(Vendor).filter(Vendor.name == vendor_data.get('name')).first()
+            if existing:
+                return False, "A vendor with this name already exists"
+            
+            # Create new vendor from data
+            vendor = Vendor(
+                id=vendor_data.get('id') or str(uuid.uuid4()),
+                name=vendor_data.get('name', ''),
+                contact=vendor_data.get('contact', ''),
+                phone=vendor_data.get('phone', ''),
+                email=vendor_data.get('email', ''),
+                address=vendor_data.get('address', '')
+            )
+            
+            session.add(vendor)
+            session.commit()
             return True, "Vendor added successfully"
-        return False, "Failed to add vendor"
+        except Exception as e:
+            session.rollback()
+            return False, f"Failed to add vendor: {str(e)}"
+        finally:
+            session.close()
 
-    def update_vendor(self, vendor):
+    def update_vendor(self, vendor_data):
         """Update an existing vendor"""
-        vendors = self.db_manager.get_vendors()
-
-        # Check if vendor name already exists (for a different vendor)
-        if any(v.get("name") == vendor.name and v.get("id") != vendor.id for v in vendors):
-            return False, "A vendor with this name already exists"
-
-        result = self.db_manager.save_vendor(vendor.to_dict())
-        if result:
+        session = self.db_manager.Session()
+        try:
+            vendor_id = vendor_data.get('id')
+            if not vendor_id:
+                return False, "Vendor ID is required"
+            
+            # Check if vendor exists
+            vendor = session.query(Vendor).filter(Vendor.id == vendor_id).first()
+            if not vendor:
+                return False, "Vendor not found"
+            
+            # Check if vendor name already exists (for a different vendor)
+            name = vendor_data.get('name')
+            existing = session.query(Vendor).filter(
+                Vendor.name == name, Vendor.id != vendor_id
+            ).first()
+            if existing:
+                return False, "A vendor with this name already exists"
+            
+            # Update vendor fields
+            vendor.name = vendor_data.get('name', vendor.name)
+            vendor.contact = vendor_data.get('contact', vendor.contact)
+            vendor.phone = vendor_data.get('phone', vendor.phone)
+            vendor.email = vendor_data.get('email', vendor.email)
+            vendor.address = vendor_data.get('address', vendor.address)
+            
             # Update vendor name in purchases
-            self.update_vendor_name_in_purchases(vendor.id, vendor.name)
+            purchases = session.query(Purchase).filter(Purchase.vendor_id == vendor_id).all()
+            for purchase in purchases:
+                purchase.vendor_name = vendor.name
+            
+            session.commit()
             return True, "Vendor updated successfully"
-
-        return False, "Vendor not found"
-
-    def update_vendor_name_in_purchases(self, vendor_id, vendor_name):
-        """Update vendor name in all related purchases"""
-        purchases = self.db_manager.get_purchases()
-        updated = False
-
-        for purchase in purchases:
-            if purchase.get("vendor_id") == vendor_id:
-                purchase["vendor_name"] = vendor_name
-                self.db_manager.save_purchase(purchase)
-                updated = True
+        except Exception as e:
+            session.rollback()
+            return False, f"Failed to update vendor: {str(e)}"
+        finally:
+            session.close()
 
     def delete_vendor(self, vendor_id):
         """Delete a vendor by ID"""
-        return self.db_manager.delete_vendor(vendor_id)
+        session = self.db_manager.Session()
+        try:
+            # Check if vendor is used in purchases
+            purchases = session.query(Purchase).filter(Purchase.vendor_id == vendor_id).count()
+            if purchases > 0:
+                return False, "Cannot delete vendor that is used in purchases"
+            
+            # Delete vendor
+            vendor = session.query(Vendor).filter(Vendor.id == vendor_id).first()
+            if vendor:
+                session.delete(vendor)
+                session.commit()
+                return True, "Vendor deleted successfully"
+            
+            return False, "Vendor not found"
+        except Exception as e:
+            session.rollback()
+            return False, f"Failed to delete vendor: {str(e)}"
+        finally:
+            session.close()
 
     def get_vendor_names(self):
         """Get a list of all vendor names"""
-        return [vendor.name for vendor in self.get_all_vendors()]
+        session = self.db_manager.Session()
+        try:
+            vendors = session.query(Vendor).all()
+            return [vendor.name for vendor in vendors]
+        finally:
+            session.close()

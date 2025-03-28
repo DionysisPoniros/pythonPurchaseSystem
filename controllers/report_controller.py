@@ -1,6 +1,7 @@
 # controllers/report_controller.py
 from datetime import datetime
-import numpy as np
+from database.models import Purchase, Budget, Vendor, PurchaseBudget
+from sqlalchemy.orm import joinedload
 import csv
 import os
 
@@ -22,137 +23,118 @@ class ReportController:
         if not self.budget_controller:
             raise RuntimeError("Budget controller not set. Call set_controllers first.")
 
-        year = year or datetime.now().year
         return self.budget_controller.calculate_budget_usage(year)
 
     def generate_monthly_spending(self, year=None):
         """Generate monthly spending report data"""
-        if not self.purchase_controller:
-            raise RuntimeError("Purchase controller not set. Call set_controllers first.")
-
         year = year or datetime.now().year
-        purchases = self.purchase_controller.get_purchase_by_year(year)
-
-        # Initialize monthly data
-        monthly_data = {m: 0 for m in range(1, 13)}
-
-        # Calculate monthly totals
-        for purchase in purchases:
-            try:
-                purchase_date = datetime.strptime(purchase.date, "%Y-%m-%d")
-                if purchase_date.year == year:
-                    month = purchase_date.month
-                    monthly_data[month] += purchase.get_total()
-            except (ValueError, AttributeError):
-                # Skip purchases with invalid dates
-                continue
-
-        # Format result
-        result = []
-        months = ["January", "February", "March", "April", "May", "June",
-                  "July", "August", "September", "October", "November", "December"]
-
-        for month_num, amount in monthly_data.items():
-            result.append({
-                "month_num": month_num,
-                "month": months[month_num - 1],
-                "amount": amount
-            })
-
-        return sorted(result, key=lambda x: x["month_num"])
+        session = self.db_manager.Session()
+        
+        try:
+            # Query purchases for the year with their line items
+            purchases = session.query(Purchase).filter(
+                Purchase.date.like(f"{year}%")
+            ).options(joinedload(Purchase.line_items)).all()
+            
+            # Initialize monthly data
+            monthly_data = {m: 0 for m in range(1, 13)}
+            
+            # Calculate monthly totals
+            for purchase in purchases:
+                try:
+                    purchase_date = datetime.strptime(purchase.date, "%Y-%m-%d")
+                    if purchase_date.year == year:
+                        month = purchase_date.month
+                        # Calculate total for this purchase
+                        total = 0
+                        for line_item in purchase.line_items:
+                            total += line_item.quantity * line_item.unit_price
+                        monthly_data[month] += total
+                except (ValueError, AttributeError):
+                    # Skip purchases with invalid dates
+                    continue
+            
+            # Format result
+            result = []
+            months = ["January", "February", "March", "April", "May", "June",
+                      "July", "August", "September", "October", "November", "December"]
+            
+            for month_num, amount in monthly_data.items():
+                result.append({
+                    "month_num": month_num,
+                    "month": months[month_num - 1],
+                    "amount": amount
+                })
+            
+            return sorted(result, key=lambda x: x["month_num"])
+        finally:
+            session.close()
 
     def generate_vendor_spending(self, year=None):
         """Generate vendor spending report data"""
-        if not self.purchase_controller or not self.vendor_controller:
-            raise RuntimeError("Controllers not set. Call set_controllers first.")
-
         year = year or datetime.now().year
-        purchases = self.purchase_controller.get_purchase_by_year(year)
-
-        # Calculate vendor data
-        vendor_data = {}
-
-        for purchase in purchases:
-            vendor_id = purchase.vendor_id
-            if vendor_id not in vendor_data:
-                vendor_data[vendor_id] = {
-                    "name": purchase.vendor_name,
-                    "total_spent": 0,
-                    "purchase_count": 0
-                }
-
-            vendor_data[vendor_id]["total_spent"] += purchase.get_total()
-            vendor_data[vendor_id]["purchase_count"] += 1
-
-        # Format result
-        result = []
-        for vendor_id, data in vendor_data.items():
-            avg_order = data["total_spent"] / data["purchase_count"] if data["purchase_count"] > 0 else 0
-
-            result.append({
-                "vendor_id": vendor_id,
-                "name": data["name"],
-                "total_spent": data["total_spent"],
-                "purchase_count": data["purchase_count"],
-                "avg_order": avg_order
-            })
-
-        return sorted(result, key=lambda x: x["total_spent"], reverse=True)
+        session = self.db_manager.Session()
+        
+        try:
+            # Query purchases for the year with their line items
+            purchases = session.query(Purchase).filter(
+                Purchase.date.like(f"{year}%")
+            ).options(joinedload(Purchase.line_items)).all()
+            
+            # Calculate vendor data
+            vendor_data = {}
+            
+            for purchase in purchases:
+                vendor_id = purchase.vendor_id
+                if vendor_id not in vendor_data:
+                    vendor_data[vendor_id] = {
+                        "name": purchase.vendor_name,
+                        "total_spent": 0,
+                        "purchase_count": 0
+                    }
+                
+                # Calculate total for this purchase
+                total = 0
+                for line_item in purchase.line_items:
+                    total += line_item.quantity * line_item.unit_price
+                
+                vendor_data[vendor_id]["total_spent"] += total
+                vendor_data[vendor_id]["purchase_count"] += 1
+            
+            # Format result
+            result = []
+            for vendor_id, data in vendor_data.items():
+                avg_order = data["total_spent"] / data["purchase_count"] if data["purchase_count"] > 0 else 0
+                
+                result.append({
+                    "vendor_id": vendor_id,
+                    "name": data["name"],
+                    "total_spent": data["total_spent"],
+                    "purchase_count": data["purchase_count"],
+                    "avg_order": avg_order
+                })
+            
+            return sorted(result, key=lambda x: x["total_spent"], reverse=True)
+        finally:
+            session.close()
 
     def export_budget_report(self, year, file_path):
         """Export budget report to CSV"""
         try:
             budget_data = self.generate_budget_summary(year)
             monthly_data = self.generate_monthly_spending(year)
+            
+            from utils.exporters import CSVExporter
+            return CSVExporter.export_budget_report(budget_data, monthly_data, year, file_path)
+        except Exception as e:
+            return False, f"Export failed: {str(e)}"
 
-            with open(file_path, 'w', newline='') as csvfile:
-                writer = csv.writer(csvfile)
-
-                # Write header
-                writer.writerow(["Budget Report", f"Fiscal Year: {year}"])
-                writer.writerow([])
-
-                # Write summary
-                writer.writerow(["Budget Summary"])
-                writer.writerow(["Budget", "Amount", "Spent", "Remaining", "Percent Used"])
-
-                total_budget = 0
-                total_spent = 0
-
-                for data in budget_data:
-                    writer.writerow([
-                        data["name"],
-                        f"${data['amount']:.2f}",
-                        f"${data['spent']:.2f}",
-                        f"${data['remaining']:.2f}",
-                        f"{data['percent']:.1f}%"
-                    ])
-
-                    total_budget += data["amount"]
-                    total_spent += data["spent"]
-
-                total_remaining = total_budget - total_spent
-                total_percent = (total_spent / total_budget * 100) if total_budget > 0 else 0
-
-                writer.writerow([
-                    "TOTAL",
-                    f"${total_budget:.2f}",
-                    f"${total_spent:.2f}",
-                    f"${total_remaining:.2f}",
-                    f"{total_percent:.1f}%"
-                ])
-
-                # Write monthly breakdown
-                writer.writerow([])
-                writer.writerow(["Monthly Breakdown"])
-                writer.writerow(["Month", "Amount"])
-
-                for data in monthly_data:
-                    writer.writerow([data["month"], f"${data['amount']:.2f}"])
-
-                writer.writerow(["TOTAL", f"${sum(data['amount'] for data in monthly_data):.2f}"])
-
-            return True, "Report exported successfully"
-
+    def export_vendor_report(self, year, file_path):
+        """Export vendor report to CSV"""
+        try:
+            vendor_data = self.generate_vendor_spending(year)
+            
+            from utils.exporters import CSVExporter
+            return CSVExporter.export_vendor_report(vendor_data, year, file_path)
         except Exception as e:
             return False, f"Export failed: {str(e)}"

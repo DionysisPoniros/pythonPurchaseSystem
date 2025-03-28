@@ -1,14 +1,17 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 from datetime import datetime
-from models.budget import Budget
+from database.models import Budget, YearlyBudgetAmount
 from utils.table_utils import configure_treeview
+import uuid
+from views.view_factory import ViewFactory
 
 class BudgetListView:
     def __init__(self, parent, controllers, show_view_callback):
         self.parent = parent
         self.controllers = controllers
         self.show_view = show_view_callback
+        self.db_manager = controllers["budget"].db_manager
 
         self.current_year = datetime.now().year
 
@@ -46,6 +49,7 @@ class BudgetListView:
         columns = ("ID", "Code", "Name", "Amount", "Spent", "Remaining", "Percent")
         self.budget_tree = ttk.Treeview(table_frame, columns=columns, show="headings")
         self.budget_tree = configure_treeview(self.budget_tree)
+        
         # Set column headings
         for col in columns:
             self.budget_tree.heading(col, text=col)
@@ -191,8 +195,14 @@ class BudgetListView:
         tk.Label(year_amount_frame, text="Amount:").grid(row=0, column=0, sticky="w", pady=5, padx=5)
         amount_var = tk.StringVar()
 
-        if is_edit and selected_year in budget.yearly_amount:
-            amount_var.set(str(budget.yearly_amount[selected_year]))
+        if is_edit:
+            # Get the amount for this year from yearly_amounts relationship
+            amount = 0
+            for yearly_amount in budget.yearly_amounts:
+                if yearly_amount.year == selected_year:
+                    amount = yearly_amount.amount
+                    break
+            amount_var.set(str(amount))
         else:
             amount_var.set("0.00")
 
@@ -206,6 +216,7 @@ class BudgetListView:
         def save_budget():
             code = code_var.get().strip()
             name = name_var.get().strip()
+            description = desc_var.get().strip()
             amount_str = amount_var.get().strip()
 
             if not code:
@@ -224,37 +235,36 @@ class BudgetListView:
                 messagebox.showerror("Error", "Amount must be a valid number")
                 return
 
-            if is_edit:
-                # Update existing budget
-                budget.code = code
-                budget.name = name
-                budget.description = desc_var.get().strip()
+            session = self.db_manager.Session()
+            try:
+                if is_edit:
+                    # Update existing budget through controller
+                    budget_data = {
+                        "id": budget.id,
+                        "code": code,
+                        "name": name,
+                        "description": description,
+                        "yearly_amount": {selected_year: amount}
+                    }
+                    success, message = self.controllers["budget"].update_budget(budget_data)
+                else:
+                    # Create new budget through controller
+                    budget_data = {
+                        "code": code,
+                        "name": name,
+                        "description": description,
+                        "yearly_amount": {selected_year: amount}
+                    }
+                    success, message = self.controllers["budget"].add_budget(budget_data)
 
-                # Ensure yearly_amount exists
-                if not hasattr(budget, "yearly_amount") or budget.yearly_amount is None:
-                    budget.yearly_amount = {}
-
-                budget.yearly_amount[selected_year] = amount
-
-                success, message = self.controllers["budget"].update_budget(budget)
-            else:
-                # Create new budget
-                yearly_amount = {selected_year: amount}
-                new_budget = Budget(
-                    code=code,
-                    name=name,
-                    description=desc_var.get().strip(),
-                    yearly_amount=yearly_amount
-                )
-
-                success, message = self.controllers["budget"].add_budget(new_budget)
-
-            if success:
-                dialog.destroy()
-                messagebox.showinfo("Success", message)
-                self.update_budget_display()
-            else:
-                messagebox.showerror("Error", message)
+                if success:
+                    dialog.destroy()
+                    messagebox.showinfo("Success", message)
+                    self.update_budget_display()
+                else:
+                    messagebox.showerror("Error", message)
+            finally:
+                session.close()
 
         tk.Button(button_frame, text="Cancel", command=dialog.destroy).pack(side=tk.LEFT, padx=5)
         tk.Button(button_frame, text="Save", command=save_budget).pack(side=tk.RIGHT, padx=5)
@@ -264,8 +274,8 @@ class BudgetListView:
 
     def return_to_dashboard(self):
         """Return to main dashboard"""
-        from views.main_dashboard import MainDashboard
-        dashboard = MainDashboard(self.parent, self.controllers, self.show_view)
+        from views.view_factory import ViewFactory
+        dashboard = ViewFactory.create_view('MainDashboard', self.parent, self.controllers, self.show_view)
         self.show_view(dashboard)
 
     def show(self):

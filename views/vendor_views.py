@@ -1,13 +1,16 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
-from models.vendor import Vendor
+from database.models import Vendor  # Updated import
 from utils.table_utils import configure_treeview
+import uuid  # Added for UUID generation
+from views.view_factory import ViewFactory
 
 class VendorListView:
     def __init__(self, parent, controllers, show_view_callback):
         self.parent = parent
         self.controllers = controllers
         self.show_view = show_view_callback
+        self.db_manager = controllers["vendor"].db_manager
 
         self.frame = tk.Frame(parent)
         self.setup_ui()
@@ -30,6 +33,7 @@ class VendorListView:
         columns = ("ID", "Name", "Contact", "Phone", "Email")
         self.vendor_tree = ttk.Treeview(table_frame, columns=columns, show="headings")
         self.vendor_tree = configure_treeview(self.vendor_tree)
+        
         # Set column headings
         for col in columns:
             self.vendor_tree.heading(col, text=col)
@@ -165,33 +169,39 @@ class VendorListView:
                 messagebox.showerror("Error", "Vendor name is required")
                 return
 
-            if is_edit:
-                # Update existing vendor
-                vendor.name = name
-                vendor.contact = contact_var.get().strip()
-                vendor.phone = phone_var.get().strip()
-                vendor.email = email_var.get().strip()
-                vendor.address = address_var.get().strip()
+            session = self.db_manager.Session()
+            try:
+                if is_edit:
+                    # Update existing vendor
+                    vendor_data = {
+                        "id": vendor.id,
+                        "name": name,
+                        "contact": contact_var.get().strip(),
+                        "phone": phone_var.get().strip(),
+                        "email": email_var.get().strip(),
+                        "address": address_var.get().strip()
+                    }
+                    success, message = self.controllers["vendor"].update_vendor(vendor_data)
+                else:
+                    # Create new vendor with SQLAlchemy model
+                    vendor_data = {
+                        "id": str(uuid.uuid4()),
+                        "name": name,
+                        "contact": contact_var.get().strip(),
+                        "phone": phone_var.get().strip(),
+                        "email": email_var.get().strip(),
+                        "address": address_var.get().strip()
+                    }
+                    success, message = self.controllers["vendor"].add_vendor(vendor_data)
 
-                success, message = self.controllers["vendor"].update_vendor(vendor)
-            else:
-                # Create new vendor
-                new_vendor = Vendor(
-                    name=name,
-                    contact=contact_var.get().strip(),
-                    phone=phone_var.get().strip(),
-                    email=email_var.get().strip(),
-                    address=address_var.get().strip()
-                )
-
-                success, message = self.controllers["vendor"].add_vendor(new_vendor)
-
-            if success:
-                dialog.destroy()
-                messagebox.showinfo("Success", message)
-                self.refresh_vendor_list()
-            else:
-                messagebox.showerror("Error", message)
+                if success:
+                    dialog.destroy()
+                    messagebox.showinfo("Success", message)
+                    self.refresh_vendor_list()
+                else:
+                    messagebox.showerror("Error", message)
+            finally:
+                session.close()
 
         tk.Button(button_frame, text="Cancel", command=dialog.destroy).pack(side=tk.LEFT, padx=5)
         tk.Button(button_frame, text="Save", command=save_vendor).pack(side=tk.RIGHT, padx=5)
@@ -201,8 +211,8 @@ class VendorListView:
 
     def return_to_dashboard(self):
         """Return to main dashboard"""
-        from views.main_dashboard import MainDashboard
-        dashboard = MainDashboard(self.parent, self.controllers, self.show_view)
+        from views.view_factory import ViewFactory
+        dashboard = ViewFactory.create_view('MainDashboard', self.parent, self.controllers, self.show_view)
         self.show_view(dashboard)
 
     def show(self):

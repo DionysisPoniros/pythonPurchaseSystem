@@ -1,8 +1,8 @@
 import tkinter as tk
-from tkinter import ttk, messagebox, filedialog
+from tkinter import ttk, messagebox
 from datetime import datetime
-from utils.chart_utils import ChartGenerator
 from utils.table_utils import configure_treeview
+from views.view_factory import ViewFactory
 
 class ReceivingDashboardView:
     def __init__(self, parent, controllers, show_view_callback):
@@ -85,7 +85,6 @@ class ReceivingDashboardView:
         # Insert pending items
         today = datetime.now().date()
 
-        
         for i, purchase in enumerate(purchases):
             # Skip if all items received
             if purchase.is_received():
@@ -98,10 +97,10 @@ class ReceivingDashboardView:
             except ValueError:
                 days_outstanding = "N/A"
 
-            # Get pending items
+            # Get pending items - FIXED: Use proper attribute access
             pending_items = [
-                item.get("description") for item in purchase.line_items
-                if not item.get("received", False)
+                item.description for item in purchase.line_items
+                if not item.received
             ]
             pending_text = ", ".join(pending_items)
             if len(pending_text) > 50:
@@ -160,8 +159,8 @@ class ReceivingDashboardView:
 
     def return_to_dashboard(self):
         """Return to main dashboard"""
-        from views.main_dashboard import MainDashboard
-        dashboard = MainDashboard(self.parent, self.controllers, self.show_view)
+        from views.view_factory import ViewFactory
+        dashboard = ViewFactory.create_view('MainDashboard', self.parent, self.controllers, self.show_view)
         self.show_view(dashboard)
 
     def show(self):
