@@ -11,14 +11,6 @@ DATABASE_FILE = "purchase_system.db"
 DATABASE_URL = f"sqlite:///{DATABASE_FILE}"
 BACKUP_DIR = "backups"
 
-# Data directory (for legacy JSON support, can be removed later)
-DATA_DIR = "data"
-
-# File names (legacy, can be removed later)
-PURCHASES_FILE = "purchases.json"
-VENDORS_FILE = "vendors.json"
-BUDGETS_FILE = "budgets.json"
-
 # UI settings
 UI_THEME = "clam"  # Possible values: "clam", "alt", "default"
 UI_FONTS = {

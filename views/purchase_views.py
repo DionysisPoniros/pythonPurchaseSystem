@@ -400,8 +400,8 @@ class PurchaseListView:
 
         if purchase.budgets:
              for budget_alloc in purchase.budgets:
-                 # budget_alloc is now a PurchaseBudget object
-                 budget_name = budget_alloc.budget.name if budget_alloc.budget else "Unknown Budget" # Access nested budget name
+                 # Use budget_alloc.budget.name and budget_alloc.amount
+                 budget_name = budget_alloc.budget.name if budget_alloc.budget else "Unknown Budget"
                  tk.Label(budget_frame, text=f"• {budget_name}: ${budget_alloc.amount:.2f}").pack(
                      anchor="w", padx=20)
         else:
