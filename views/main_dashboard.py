@@ -169,7 +169,7 @@ class MainDashboard:
             ("💰 Manage Budgets", self.manage_budgets),
             ("📊 Reports", self.show_reports_menu), # Changed to menu trigger
             ("📥 Import Purchases", self.import_data),
-            ("⚙️ DB Management", self.show_db_management), # Added DB management link
+            
             ("🚪 Exit System", self.exit_system),
         ]
 
